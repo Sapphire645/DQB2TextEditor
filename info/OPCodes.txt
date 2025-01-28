@@ -1,0 +1,20 @@
+<pname> : Builder name
+<_:_> : 漢字^カタカナ
+<cap> : Capitalizes next word
+<allcap> : Next text will be in caps
+</allcaps> : Ends "allcap"
+<off> : Rubiss style textbox
+<morf(male,female)> : Changes word depending on gender
+<key> : Waits for you to press A. Advanves to next cutscene entry.
+<br> : Line break
+<$iname(_)> : Name of item by index
+<$sgl_iname(_)> : Name of item by index (singular)
+<$plr_iname(_)> : Name of item by index (plural)
+<$iicon(_)> : Icon of item by index
+<$cdef(_)> : Changes text colour
+</color> : Returns to white
+<note> : ♩
+<--> : ─
+<---> : ──
+<show(name)> : Shows name
+<6>,<9> : ‛,’

@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="info\CODE.txt" />
+    <None Remove="info\OPCodes.txt" />
+    <None Remove="info\Preview.txt" />
+    <None Remove="info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
+    <None Remove="info\versions\Switch-Demo-EU-1.0.txt" />
+    <None Remove="info\versions\Switch-EU-1.5.2.txt" />
+    <None Remove="info\versions\Switch-JumboDemo-EU-1.1.txt" />
+    <None Remove="info\versions\Switch-JumboDemo-JP-1.1.txt" />
+    <None Remove="info\versions\Switch-Release-EU-1.5.2.txt" />
+    <None Remove="resource\icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="info\CODE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\OPCodes.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\Preview.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\versions\Switch-Demo-EU-1.0.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\versions\Switch-JumboDemo-EU-1.1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\versions\Switch-JumboDemo-JP-1.1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="info\versions\Switch-Release-EU-1.5.2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="resource\icon.png" />
+  </ItemGroup>
+
+</Project>

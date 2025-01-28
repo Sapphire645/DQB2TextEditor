@@ -1,0 +1,40 @@
+﻿<Window x:Class="DQB2TextEditor.code.TextValues"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DQB2TextEditor.code"
+        mc:Ignorable="d"
+        Title="TextValues" Height="300" Width="600"  Background="{DynamicResource DarkBackdropBrush}" WindowStyle="None">
+    <DockPanel>
+        <Border Background="{DynamicResource DarkForegroundBrush}" Height="30" DockPanel.Dock="Top" MouseLeftButtonDown="DragWindow">
+            <Grid>
+                <StackPanel Height="30" Orientation="Horizontal">
+                    <Image Source="/resource/icon.png" Margin="5"/>
+                    <TextBlock Style="{StaticResource TextBlockGeneral}" Text="DQB2 Text Editor - Change your builder values" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource DarkWhiteBrush}" />
+                </StackPanel>
+                <StackPanel Height="30" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Content="-" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                    Click="MinimizeButton_Click"/>
+                    <Button Name="MaximizeButton" Content="⬜" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                    Click="MaximizeButton_Click"/>
+                    <Button Content="🞨" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                    Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Margin="10" BorderBrush="{DynamicResource DarkBorderBrush}" BorderThickness="1">
+            <Grid>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="15" Text="Builder name"/>
+                    <TextBox Name="TextBoxName"  Width="470" TextChanged="TextChange" GotFocus="OutText" LostFocus="InText"/>
+                    <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="15" Margin="0,10,0,0" Text="Builder gender"/>
+                    <UniformGrid Columns="2">
+                        <RadioButton Name="MaleG" GroupName="Gender" Style="{StaticResource {x:Type ToggleButton}}" FontSize="15" Content="Male" Click="test"/>
+                        <RadioButton Name="FemaleG" GroupName="Gender" Style="{StaticResource {x:Type ToggleButton}}" FontSize="15" Content="Female" Click="test"/>
+                    </UniformGrid>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DockPanel>
+</Window>

@@ -1,0 +1,40 @@
+﻿<Window x:Class="DQB2TextEditor.code.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DQB2TextEditor.code"
+        mc:Ignorable="d"
+        Title="About" Height="300" Width="400" Background="{DynamicResource DarkBackdropBrush}" WindowStyle="None">
+    <DockPanel>
+        <Border Background="{DynamicResource DarkForegroundBrush}" Height="30" DockPanel.Dock="Top" MouseLeftButtonDown="DragWindow">
+            <Grid>
+                <StackPanel Height="30" Orientation="Horizontal">
+                    <Image Source="/resource/icon.png" Margin="5"/>
+                    <TextBlock Style="{StaticResource TextBlockGeneral}" Text="DQB2 Text Editor - About" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource DarkWhiteBrush}" />
+                </StackPanel>
+                <StackPanel Height="30" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Content="-" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                Click="MinimizeButton_Click"/>
+                    <Button Name="MaximizeButton" Content="⬜" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                Click="MaximizeButton_Click"/>
+                    <Button Content="🞨" VerticalAlignment="Center" HorizontalAlignment="Right" Width="30" Height="30" FontSize="16"
+                Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Margin="10" BorderBrush="{DynamicResource DarkBorderBrush}" BorderThickness="1">
+            <Grid>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource TextBlockGeneral}" Text= "DQB2 Text Editor - v01" HorizontalAlignment="Left" FontSize="20" Margin="0,6" FontWeight="Bold"/>
+                    <Separator/>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource TextBlockGeneral}" Text= "Project Page:" HorizontalAlignment="Left" FontSize="15"/>
+                    <TextBox Margin="0,0,0,6" Text="https://github.com/Sapphire645/DQB2TextEditor" AcceptsReturn="True" Background="Transparent" Foreground="{StaticResource DarkHighlightBrush}" HorizontalAlignment="Left" FontSize="15" IsReadOnly="True"/>
+                    <TextBlock  Margin="0,6,0,0" Style="{StaticResource TextBlockGeneral}" Text= "LINKDATA code by Turtle-Insect." HorizontalAlignment="Left" FontSize="15"/>
+                    <TextBox Text="https://github.com/turtle-insect/DQB2" AcceptsReturn="True" Background="Transparent" Foreground="{StaticResource DarkHighlightBrush}" HorizontalAlignment="Left" FontSize="15" IsReadOnly="True"/>
+                    <TextBlock Margin="0,0,0,6" Style="{StaticResource TextBlockGeneral}" Text= "ありがとうございました！" HorizontalAlignment="Left" Foreground="Gray" FontSize="15"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DockPanel>
+</Window>

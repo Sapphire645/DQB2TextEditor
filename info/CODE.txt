@@ -1,0 +1,46 @@
+1: >> SYNC_ANIMATIONS
+10: >> WAIT	0:time
+20: * FADE_IN	0:bool,1:time
+21: * FADE_OUT	0:bool,1:time
+50: * CAMERA_END
+51: * CAMERA_HOLD	0:time
+53: * CAMERA_START
+54: * CAMMERA_SOURCE	0:x,1:y,2:z,3:time,4:bool?
+55: * CAMMERA_DEST	0:x,1:y,2:z,3:time,4:bool?
+56: * CAMERA_TARGET	0:?,1:?,2:time,3:?
+57: * CAMERA_RELEASE_TARGET	0:bool
+58: * CAMMERA_SOURCE2?	0:x,1:y,2:z,3:time
+59: * CAMMERA_DEST2?	0:x,1:y,2:z,3:time
+61: * CAMERA_START_2
+70: ?70_LOCK_CHAR	0:char,1:bool
+101: >>APPEAR_DISSAPEAR	0:char,1:bool
+104: >> GO_TO_COORD	0:char,1:x,2:y,3:z,4:bool,5:bool	
+105: >> 105GO_TO	0:char,1:?,2:?,3:?
+106: >> GO_TO_END?	0:char,1:char
+110: TEXTBOX	0:char,1:anim,2:scron/scroff,4:index
+111: TEXTBOX_YES_NO	0:char,1:anim,2:scron/scroff,4:index
+113: TEXTBOX_UI	4:?
+114: *114??	0:char,1:bool
+115: >> WARP	0:char,1:?,2:?,3:?
+118: OFF_TEXTBOX	0:char?,4:index
+119: * FADE	0:true
+120: ANIMATION	0:char,1:anim,2:staybool
+130: >> TARGET_SPEAKER?	0:char
+132: >> TARGET_PLAYER	0:char
+133: >> TARGET_CHAR	0:char,1:target
+136: >> TURN_COORD	0:char
+138: >> SET_TURN_TO_SPEAKER	0:char,1:bool
+160: *160??	0:char,1:bool
+180: >> GO_TO_CHAR	0:char,1:target
+210: ?CLIFFDEST210	0:id
+223: DEFAULT_ANIMATION	0:char
+320: ?CLIFFDEST320	0:id
+358: ?358_LOCK_CHAR	0:char,1:bool
+407: + ITEM	0:id
+440: - POINTER_SPLIT_POINT	0:type #0:Yes/No 10:Gender 13:Working 14:Random
+441: - POINTER_END_441
+442: - POINTER_START_442
+443: - POINTER_YES_NO_BEGGINING_LOOPBACK
+444: - POINTER_JOIN
+445: - POINTER_END_445
+450: - END

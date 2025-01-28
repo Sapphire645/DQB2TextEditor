@@ -1,0 +1,13 @@
+-SIZE	59193
+-LAN
+0	English
+1	French
+2	German
+3	Italian
+4	Spanish
+-CUT
+c	11483-19383
+t	19383-58883
+-TXT
+l	0-29
+l	35-209

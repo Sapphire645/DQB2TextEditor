@@ -1,0 +1,18 @@
+-SIZE	91912
+-LAN
+0	Japanese
+1	English
+2	French
+3	German
+4	Italian
+5	Spanish
+6	Chinese
+7	Korean
+8	Null
+-CUT
+c	12502-20402
+t	20402-91502
+-TXT
+l	0-53
+l	63-500
+-ENCRYPTED
