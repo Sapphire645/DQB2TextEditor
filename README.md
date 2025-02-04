@@ -32,4 +32,8 @@ If any of these match the files of your linkdata select them.
 - Buffers on first text load and on large file loads.
 
 ## Screenshots
-[Todo](/screenshots/mainwindow)
+<img src="./screenshots/mainwindow.png" width="500" /> 
+<img src="./screenshots/edittext.png" width="800" /> 
+<img src="./screenshots/preview.png" width="800" /> 
+<img src="./screenshots/japanesepreview.png" width="800" /> 
+<img src="./screenshots/textpreview.png" width="800" /> 
