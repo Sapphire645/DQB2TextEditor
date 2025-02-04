@@ -101,20 +101,33 @@ namespace DQB2TextEditor
                 case "v":
                     ViewPopup.IsOpen = true;
                     OpenPopupButton.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
+                    ViewPopupExport.IsOpen = false;
+                    OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupImport.IsOpen = false;
+                    OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     break;
                 case "e":
                     ViewPopupExport.IsOpen = true;
                     OpenPopupButtonExport.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
+                    ViewPopup.IsOpen = false;
+                    OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupImport.IsOpen = false;
+                    OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     break;
                 case "i":
                     ViewPopupImport.IsOpen = true;
                     OpenPopupButtonImport.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
+                    ViewPopup.IsOpen = false;
+                    OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupExport.IsOpen = false;
+                    OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     break;
             }
         }
 
         private void ClosePopup(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (popupOpen) return;
             string tag;
             if(sender is Border)
             {

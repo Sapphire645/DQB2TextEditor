@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -214,6 +216,9 @@ namespace DQB2TextEditor.code
             var EntryCountBytes = BitConverter.GetBytes(EntryCountPointerStart); //Might have to edit this...
             Array.Copy(EntryCountBytes, 0, TextFile, 0, 4);
 
+            //Add for testing 
+            System.IO.File.Delete("TestText.txt");
+
             if (CutsceneFile != null)
                 if (VersionInformation.Encrypted)
                     foreach (DialogueEntry EntryVisual in Text)
@@ -311,6 +316,9 @@ namespace DQB2TextEditor.code
             var text = Encoding.UTF8.GetBytes(Entry.Line);
             var textSize = text.Length;
             int PointerCurrent = BitConverter.ToInt32(TextFile, PointersStart + offset * 4);
+
+            //For Testing
+            System.IO.File.AppendAllText("TestText.txt", offset+"\t"+ Entry.Line+"\n", Encoding.UTF8);
 
             if (offset < EntryCount - 1)
             {
@@ -569,7 +577,7 @@ namespace DQB2TextEditor.code
         {
             Entry NewVal = new Entry(Line, PointerOffset);
             NewVal.Command = Command;
-            if(NewVal.Arguments != null)
+            if(Arguments != null)
             {
                 NewVal.Arguments = new int[11];
                 Arguments.CopyTo(NewVal.Arguments, 0);
