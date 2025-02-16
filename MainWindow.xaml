@@ -28,17 +28,17 @@
         <Border Margin="10" BorderBrush="{DynamicResource DarkBorderBrush}" BorderThickness="1">
             <Grid>
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock  Margin="30,0" Style="{StaticResource TextBlockGeneral}" Foreground="{DynamicResource DarkSelectedBrush}" HorizontalAlignment="Left" Text="Features missing:&#x0D;&#x0A;   -Import TXT file&#x0D;&#x0A;   -Full command list&#x0D;&#x0A;   -Option to do full dump&#x0D;&#x0A;   -Preview file reading"/>
-                    <TextBlock Margin="30,0,0,8"  Style="{StaticResource TextBlockGeneral}" Foreground="{DynamicResource DarkHighlightBrush}" HorizontalAlignment="Left" Text="   -Adding/Removing entries is glitchy. Have to fix.&#x0D;&#x0A;   -If your version isn't here try using a version with the same amount of files.&#x0D;&#x0A;         Ask for version support in the github page."/>
-                    <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="15" Text="Select LINKDATA Version"/>
-                    <ComboBox Width="300" Height="30" SelectionChanged="Update" ItemsSource="{Binding VersionInfo.ComboBoxVersions}" SelectedValue="{Binding VersionInfo.VersionFile}" Foreground="{DynamicResource DarkLightBrush}"/>
+                    <TextBlock  Margin="30,0" Style="{StaticResource TextBlockGeneral}" Foreground="{DynamicResource DarkSelectedBrush}" HorizontalAlignment="Left" Text="Features missing:&#x0D;&#x0A;   -Import TXT file&#x0D;&#x0A;   -Full command list&#x0D;&#x0A;   -Full dump comparing internal"/>
+                    <TextBlock Margin="30,0,0,8"  Style="{StaticResource TextBlockGeneral}" Foreground="{DynamicResource DarkHighlightBrush}" HorizontalAlignment="Left" Text="   -Adding/Removing entries is glitchy. Have to fix.&#x0D;&#x0A;   -If your version isn't here please ask for version support in the github page."/>
                     <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="15" Margin="0,10,0,0" Text="LINKDATA Path"/>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox Width="470" Text="{Binding LinkdataPath.Value}"/>
+                        <TextBox Width="470" Text="{Binding ChangeLinkdataPath}"/>
                         <Button  Width="30" Height="30" Content="..." Command="{Binding CommandLinkdataPathUpdate}"/>
                     </StackPanel>
-                    <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="12" Margin="0,5,0,0" Text="{Binding LinkdataEntries.Value, StringFormat='Number of files in LINKDATA: \{0}'}" Foreground="{DynamicResource DarkHighlightBrush}"/>
-                    <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Center" FontSize="12" Margin="0,5,0,0" Text="{Binding VersionInfo.LINKDATASize, StringFormat='Number of files of selected version: \{0}'}" Foreground="{DynamicResource DarkSelectedBrush}"/>
+                    <Grid Width="500" Margin="5">
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Left" FontSize="12" Margin="20,0,0,0" Text="{Binding VersionFileMW, StringFormat='Version: {0}'}" Foreground="{DynamicResource DarkSelectedBrush}"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" HorizontalAlignment="Right" FontSize="12" Margin="0,0,20,0" Text="{Binding LINKDATASizeMW, StringFormat='File number: \0'}" Foreground="{DynamicResource DarkHighlightBrush}"/>
+                    </Grid>
                     <Button IsEnabled="{Binding ConfirmEnabled.Value}" Width="400" Height="30" Content="Confirm" FontSize="18" Click="Continue" Margin="0,20,0,0"/>
                 </StackPanel>
             </Grid>

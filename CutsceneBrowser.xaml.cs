@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DQB2TextEditor
 {
@@ -22,7 +24,7 @@ namespace DQB2TextEditor
             this.SizeChanged += OnWindowSizeChanged;
 
             InitializeComponent();
-            viewModel.ContextChangeTwo(ListBox, RawText, ListBoxCutscene, Saving, this);
+            viewModel.ContextChangeTwo(ListBox, RawText, ListBoxCutscene, Saving, this, DisableOnLoad);
             OPCodeText.Text = viewModel.VersionInfo.getOpcode();
         }
         protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
@@ -58,12 +60,21 @@ namespace DQB2TextEditor
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                    if (this.WindowState == WindowState.Maximized)
-                    {
-                        this.WindowState = WindowState.Normal;
-                        MaximizeButton.Content = "⬜";
-                    }
-                    this.DragMove();
+                if (this.WindowState == WindowState.Maximized)
+                {
+                    this.WindowState = WindowState.Normal;
+                    MaximizeButton.Content = "⬜";
+                }
+                this.DragMove();
+                popupOpen = false;
+                ViewPopup.IsOpen = false;
+                OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                ViewPopupExport.IsOpen = false;
+                OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                ViewPopupImport.IsOpen = false;
+                OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                ViewPopupDump.IsOpen = false;
+                OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
             }
         }
         private object oldLan = null;
@@ -105,6 +116,8 @@ namespace DQB2TextEditor
                     OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     ViewPopupImport.IsOpen = false;
                     OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupDump.IsOpen = false;
+                    OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     break;
                 case "e":
                     ViewPopupExport.IsOpen = true;
@@ -113,6 +126,8 @@ namespace DQB2TextEditor
                     OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     ViewPopupImport.IsOpen = false;
                     OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupDump.IsOpen = false;
+                    OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     break;
                 case "i":
                     ViewPopupImport.IsOpen = true;
@@ -121,6 +136,18 @@ namespace DQB2TextEditor
                     OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     ViewPopupExport.IsOpen = false;
                     OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupDump.IsOpen = false;
+                    OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    break;
+                case "d":
+                    ViewPopupImport.IsOpen = false;
+                    OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopup.IsOpen = false;
+                    OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupExport.IsOpen = false;
+                    OpenPopupButtonExport.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    ViewPopupDump.IsOpen = true;
+                    OpenPopupButtonDump.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
                     break;
             }
         }
@@ -160,6 +187,13 @@ namespace DQB2TextEditor
                         OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                     }
                     break;
+                case "d":
+                    if (ViewPopupDump.IsMouseOver == false)
+                    {
+                        ViewPopupDump.IsOpen = false;
+                        OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    }
+                    break;
             }
         }
 
@@ -173,6 +207,8 @@ namespace DQB2TextEditor
                 OpenPopupButtonImport.BorderBrush = System.Windows.Media.Brushes.Transparent;
                 ViewPopup.IsOpen = false;
                 OpenPopupButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                ViewPopupDump.IsOpen = false;
+                OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
             }
             else
             {
@@ -190,6 +226,10 @@ namespace DQB2TextEditor
                     case "i":
                         ViewPopupImport.IsOpen = true;
                         OpenPopupButtonImport.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
+                        break;
+                    case "d":
+                        ViewPopupDump.IsOpen = true;
+                        OpenPopupButtonDump.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["DarkSelectedBrush"];
                         break;
                 }
             }
@@ -213,6 +253,39 @@ namespace DQB2TextEditor
                 DataContext = refresh;
             }
             oldFilter = (sender as System.Windows.Controls.TextBox).Text;
+        }
+
+        private void Dump(object sender, RoutedEventArgs e)
+        {
+            ViewPopupDump.IsOpen = false;
+            OpenPopupButtonDump.BorderBrush = System.Windows.Media.Brushes.Transparent;
+            if((sender as Button).Tag.ToString() == "2")
+            {
+                ViewModel.DumpWindow();
+                return;
+            }
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            (sender as ToggleButton).Content = "<";
+            GridLeft.Width = new GridLength(500);
+
+            var a = this.AeeDok.ActualWidth - 200;
+            this.ListBox.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
+            this.ListBoxCutscene.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
+            RawText.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            (sender as ToggleButton).Content = ">";
+            GridLeft.Width = new GridLength(300);
+
+            var a = this.AeeDok.ActualWidth + 200;
+            this.ListBox.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
+            this.ListBoxCutscene.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
+            RawText.Height = (AeeDok.ActualHeight - 60) * ListBox.Width / (a - 20);
         }
     }
 }

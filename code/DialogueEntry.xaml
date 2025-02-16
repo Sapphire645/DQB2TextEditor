@@ -15,7 +15,7 @@
                 </ToggleButton>
                 <StackPanel Name="TextPreview" Margin="2" Visibility="Collapsed">
                     <TextBox Background="Black" Visibility="{Binding Entry.Value.NameVisible}" BorderBrush="White" Padding="14,2,15,4" FontSize="20" Text="{Binding Entry.Value.Name, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left"/>
-                    <Border Name="BorderText" BorderBrush="White" CornerRadius="5" Background="{Binding Entry.Value.Background}" BorderThickness="2" Width="500">
+                    <Border Name="BorderText" BorderBrush="{Binding Entry.Value.Foreground}" CornerRadius="5" Background="{Binding Entry.Value.Background}" BorderThickness="2" Width="500">
                         <RichTextBox Name="TextPreviewBox" Background="Transparent" BorderThickness="0" IsReadOnly="True" Padding="14,6" FontSize="21" />
                     </Border>
                 </StackPanel>

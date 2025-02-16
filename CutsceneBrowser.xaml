@@ -10,7 +10,7 @@
     <DockPanel Name="DisableOnLoad">
         <!-- Custom Title Bar -->
         <Border Background="{DynamicResource DarkForegroundBrush}" Height="30" DockPanel.Dock="Top" MouseLeftButtonDown="DragWindow">
-            <Grid>
+            <Grid Name="ItemBar">
                 <StackPanel Height="30" Orientation="Horizontal">
                     <Image Source="/resource/icon.png" Margin="5"/>
                     <TextBlock Style="{StaticResource TextBlockGeneral}" Text="DQB2 Text Editor" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource DarkWhiteBrush}" Margin="0,0,10,0" />
@@ -56,6 +56,18 @@
                             </StackPanel>
                         </Border>
                     </Popup>
+                    <Button Name="OpenPopupButtonDump"  Tag="d" Click="PopupClick" Content="Dump" MouseLeave="ClosePopup" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Height="30" Foreground="{DynamicResource DarkWhiteBrush}" MouseEnter="OpenPopup"/>
+                    <Popup PopupAnimation="Slide" Name="ViewPopupDump" Placement="Bottom" PlacementTarget="{Binding ElementName=OpenPopupButtonDump}" HorizontalOffset="150" >
+                        <Border Tag="i" Background="{StaticResource DarkForegroundBrush}"
+            BorderBrush="{StaticResource DarkSelectedBrush}"
+            BorderThickness="1" MouseLeave="ClosePopup" Padding="0,2">
+                            <StackPanel Orientation="Vertical" Width="200">
+                                <Button Style="{StaticResource ButtonToolbar}" BorderBrush="Transparent" Background="Transparent" Margin="4" Content="Dump FlowData+Text" Tag="0" Click="Dump"/>
+                                <Button Style="{StaticResource ButtonToolbar}" BorderBrush="Transparent" Background="Transparent" Margin="4" Content="Dump Only Text" Tag="1" Click="Dump" />
+                                <Button Style="{StaticResource ButtonToolbar}" BorderBrush="Transparent" Background="Transparent" Margin="4" Content="Dump Comparison Window" Tag="2" Click="Dump" />
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                     <Button Click="AboutWindow" Content="About" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Height="30" Foreground="{DynamicResource DarkWhiteBrush}"/>
                 </StackPanel>
                 <StackPanel Height="30" HorizontalAlignment="Right" Orientation="Horizontal">
@@ -70,7 +82,7 @@
         </Border>
         <Grid ClipToBounds="True" Margin="8">
             <Grid.ColumnDefinitions >
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Name="GridLeft" Width="300"/>
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <TextBox Name="OPCodeText" Visibility="{Binding TextHelpVisibility.Value}" TextWrapping="WrapWithOverflow" IsReadOnly="True"/>
@@ -79,7 +91,16 @@
                     <TextBox TextChanged="UpdateFilter"/>
                     <ComboBox Foreground="{DynamicResource DarkLightBrush}" ItemsSource="{Binding VersionInfo.Languages}" SelectedIndex="{Binding CurrentSelectedLanguage}" SelectionChanged="UpdateIDXIndex"/>
                 </UniformGrid>
-                <UniformGrid Rows="3" Columns="1" DockPanel.Dock="Bottom">
+                <UniformGrid Rows="5" Columns="1" DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Horizontal" Margin="6,0">
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="Number" FontSize="8" ToolTip="Cutscene Number" Width="36" VerticalAlignment="Bottom"/>
+                        <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="FlowData" FontSize="8" ToolTip="TalkFlowData Index" Width="36" VerticalAlignment="Bottom"/>
+                        <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Text="Text File" FontSize="8"  Margin="2" Padding="0,2,0,0" ToolTip="Current Language Text File Index" Width="36" VerticalAlignment="Bottom"/>
+                        <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="Name" FontSize="8"  HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="6,0">
                         <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="{Binding CurrentDialogue.Value.DialogueIndex}" ToolTip="Cutscene Number" Width="36"/>
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
@@ -87,16 +108,23 @@
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
                         <TextBlock Style="{StaticResource TextBlockGeneral}" Text="{Binding CurrentDialogue.Value.TextIndex}"  Margin="2" Padding="0,2,0,0" ToolTip="Current Language Text File Index" Width="36"/>
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding CurrentDialogue.Value.Preview}"  HorizontalAlignment="Left"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding CurrentDialogue.Value.Name}"  HorizontalAlignment="Left"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="6,0">
-                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="{Binding CurrentDialogue.Value.CutsceneFile.CompressedSize}" ToolTip="Cutscene Number" Width="36"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="Flow Size" FontSize="8" ToolTip="Compressed Size of Cutscene file" Width="36" VerticalAlignment="Bottom"/>
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="{Binding CurrentDialogue.Value.CutsceneFile.UncompressedSize}" ToolTip="TalkFlowData Index" Width="36"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="Text Size" FontSize="8" ToolTip="Compressed and Uncompressed Size of Text file" Width="85" VerticalAlignment="Bottom"/>
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                        <TextBlock Style="{StaticResource TextBlockGeneral}" Text="{Binding CurrentDialogue.Value.CurrentTextFile.CompressedSize}" Margin="2" Padding="0,2,0,0" ToolTip="Current Language Text File Index" Width="36"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="Preview" FontSize="8"  HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="6,0">
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="{Binding CurrentDialogue.Value.CutsceneFile.CompressedSize}" ToolTip="Compressed Size of Cutscene file" Width="36"/>
                         <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding CurrentDialogue.Value.CurrentTextFile.UncompressedSize}"  HorizontalAlignment="Left"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Text="{Binding CurrentDialogue.Value.CurrentTextFile.CompressedSize}" ToolTip="Compressed Size of Text file" Width="36"/>
+                        <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Text="{Binding CurrentDialogue.Value.CurrentTextFile.UncompressedSize}" Margin="2" Padding="0,2,0,0" ToolTip="Uncompressed Size of Text file" Width="36"/>
+                        <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                        <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding CurrentDialogue.Value.Preview}"  HorizontalAlignment="Left"/>
                     </StackPanel>
                     <UniformGrid Rows="1" Columns="2" DockPanel.Dock="Bottom">
                         <Button Content="Edit selected slot" Command="{Binding CommandLoadDialogue}"/>
@@ -138,7 +166,13 @@
                                     <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
                                     <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" ToolTip="Current Language Text File Index" Width="36">Text ID</TextBlock>
                                     <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                                    <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" HorizontalAlignment="Left">Preview/Name</TextBlock>
+                                    <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" ToolTip="Is used" Width="10">U</TextBlock>
+                                    <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                    <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" ToolTip="Island" Width="35">Island</TextBlock>
+                                    <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                    <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" Width="70" HorizontalAlignment="Left">Name</TextBlock>
+                                    <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                    <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" TextAlignment="Center" HorizontalAlignment="Left">Preview</TextBlock>
                                 </StackPanel>
                             </Border>
                             <ListBox ItemsSource="{Binding FilteredDialogueList}" SelectionChanged="CommandUpdateSelectedDialogue">
@@ -151,7 +185,13 @@
                                             <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
                                             <TextBlock Style="{StaticResource TextBlockGeneral}" Text="{Binding TextIndex}"  Margin="2" Padding="0,2,0,0" ToolTip="Current Language Text File Index" Width="36"/>
                                             <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
-                                            <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding Preview}"  HorizontalAlignment="Left"/>
+                                            <TextBlock Style="{StaticResource TextBlockGeneral}" Text="?"  Margin="2" Padding="0,2,0,0" ToolTip="Is Used" Width="10"/>
+                                            <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                            <TextBlock Style="{StaticResource TextBlockGeneral}" Text="{Binding Island}"  Margin="2" Padding="0,2,0,0" ToolTip="{Binding Island}" Width="35"/>
+                                            <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                            <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0" Width="70" Text="{Binding Name}" ToolTip="{Binding Name}"  HorizontalAlignment="Left"/>
+                                            <Rectangle Margin="4" Fill="{DynamicResource DarkBorderBrush}" Width="1"/>
+                                            <TextBlock Style="{StaticResource TextBlockGeneral}" Margin="2" Padding="0,2,0,0"  Text="{Binding Preview}"  ToolTip="{Binding Preview}" HorizontalAlignment="Left"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -185,8 +225,8 @@
                         </DockPanel>
                     </TabItem>
                 </TabControl>
-
             </DockPanel>
+            <ToggleButton Content=">" Background="{DynamicResource DarkBackgroundBrush}" Width="15" Height="15" FontSize="9" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,35,4,0" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
             <DockPanel Name="AeeDok" Grid.Column="1">
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
@@ -205,7 +245,7 @@
                     <Grid>
                         <ListBox Name="ListBoxCutscene" Visibility="Collapsed" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding UnpackedText.Value.RawTextAttempt}" Margin="10" Height="500" Width="857" />
                         <ScrollViewer Name="RawText" Height="500" Width="857">
-                            <TextBox  Margin="2" Padding="0,2,0,0" FontSize="20" Text="{Binding UnpackedText.Value.RawText}" TextWrapping="Wrap" Width="857" Visibility="{Binding Visibility, ElementName=RawText, Mode=OneWay}"/>
+                            <TextBox Name="TextBoxRaw" Margin="2" Padding="0,2,0,0" FontSize="20" Text="{Binding UnpackedText.Value.RawText}" TextWrapping="Wrap" Width="857" Visibility="{Binding Visibility, ElementName=RawText, Mode=OneWay}"/>
                         </ScrollViewer>
                         <ListBox Name="ListBox" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding UnpackedText.Value.Text}" Margin="10,0" Height="500" Width="857"/>
                     </Grid>

@@ -29,10 +29,6 @@ namespace DQB2TextEditor
             path = path.Substring(0, path.Length - 3) + "BIN";
             if (!System.IO.File.Exists(path)) return;
 
-            if (viewModel.VersionInfo.VersionFile == null) return;
-
-            if (viewModel.VersionInfo.LINKDATASize != viewModel.LinkdataEntries.Value) return;
-
             CutsceneBrowser Window = new CutsceneBrowser(viewModel);
             Window.Show();
 
@@ -71,19 +67,6 @@ namespace DQB2TextEditor
                 }
                 this.DragMove();
             }
-        }
-
-        private void Update(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if(viewModel == null) return;
-            viewModel.VersionInfo.Update();
-
-            if (viewModel.VersionInfo.LINKDATASize != viewModel.LinkdataEntries.Value) viewModel.ConfirmEnabled.Value = false;
-            else viewModel.ConfirmEnabled.Value = true;
-
-            var refresh = DataContext;
-            DataContext = null;
-            DataContext = refresh;
         }
     }
 }

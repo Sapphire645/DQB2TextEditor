@@ -29,7 +29,9 @@ namespace DQB2TextEditor.code
 
         public IDX CurrentTextFile => TextFiles != null && TextFiles.Count > 0 ? TextFiles[ViewModel.CurrentSelectedLanguage] : null;
         public string Preview { get; private set; }
-		public Dialogue(uint index, IDX cutsceneFile)
+        public string Name { get; private set; }
+        public string Island { get; private set; } = "-";
+        public Dialogue(uint index, IDX cutsceneFile)
 		{
 			DialogueIndex = index;
 			CutsceneFile = cutsceneFile;

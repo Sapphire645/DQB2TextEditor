@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Shapes;
 
 
 namespace DQB2TextEditor.code
@@ -11,11 +12,12 @@ namespace DQB2TextEditor.code
         public static string PlayerName { get; set; }
         public static bool PlayerGender { get; set; } = false; //Are you Girl
         public static bool JapaneseMode { get; set; } 
-        public List<String> ComboBoxVersions { get; private set; } = new List<String>();
+        public List<String> ComboBoxVersions { get; set; } = new List<String>();
         public static String[] NamesPreview { get; private set; } = new String[1000];
         public static String[] ColourPreview { get; private set; } = new String[1000];
         public static String[] ItemsPreview { get; private set; } = new String[4000];
         public static bool Encrypted = false;
+        public bool versionEncrypted = false;
         public String VersionFile { get; set; } = null;
 
         public List<String> Languages { get; private set; } = new List<String>();
@@ -94,6 +96,27 @@ namespace DQB2TextEditor.code
                 Commands.Add(Command);
             }
         }
+
+        public string GetVersionFromSize(uint size)
+        {
+            foreach(var Name in ComboBoxVersions)
+            {
+                foreach(var Line in System.IO.File.ReadAllLines("info/versions/" + Name + ".txt"))
+                {
+                    if (Line.StartsWith("-SIZE"))
+                    {
+                        uint.TryParse(Line.Split('\t').Last(), out var LS);
+                        if (size == LS)
+                        {
+                            VersionFile = Name;
+                            return Name;
+                        }
+                        break;
+                    }
+                }
+            }
+            return null;
+        }
         public static CommandInfo FindCommand(uint command)
         {
             foreach(var Command in Commands)
@@ -106,6 +129,7 @@ namespace DQB2TextEditor.code
             String[] lines = System.IO.File.ReadAllLines(filename);
             var Current = -1;
             Encrypted = false;
+            versionEncrypted = false;
             LanguageCount = 0;
             Languages.Clear();
             IndividualText.Clear();
@@ -134,6 +158,7 @@ namespace DQB2TextEditor.code
                 if (line.StartsWith("-ENCRYPTED"))
                 {
                     Encrypted = true;
+                    versionEncrypted = true;
                     continue;
                 }
                 switch (Current)

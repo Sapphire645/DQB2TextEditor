@@ -1,22 +1,56 @@
 ﻿using DQB2TextEditor.code;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-
+using Microsoft.Win32;
+using System.Windows.Shapes;
+using System.Text;
+using System;
+using System.Windows.Controls;
+using System;
+using System.ComponentModel;
+using System.Windows.Media;
 
 namespace DQB2TextEditor
 {
-    public class ViewModel
+    public class ViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
         public ObservableProperty<bool> ConfirmEnabled { get; set; } = new ObservableProperty<bool>() { };
         public ObservableProperty<string> LinkdataPath { get; set; } = new ObservableProperty<string>() { };
+
+        public string ChangeLinkdataPath { get
+            {
+                return LinkdataPath.Value;
+            }
+            set
+            {
+                LinkdataPath.Value = value;
+
+                if (File.Exists(LinkdataPath.Value))
+                {
+                    FileInfo fileInfo = new FileInfo(LinkdataPath.Value);
+                    var LinkdataSize = (uint)(fileInfo.Length / 32);
+
+                    VersionInfo.GetVersionFromSize(LinkdataSize);
+                    VersionInfo.Update();
+                    ConfirmEnabled.Value = true;
+                }
+                else
+                {
+                    VersionInfo = new VersionInformation(); //yeet
+                    ConfirmEnabled.Value = false;
+                }
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChangeLinkdataPath)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VersionFileMW)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LINKDATASizeMW)));
+                ConfirmEnabled.NotifyValue();
+            }
+        }
+        public string VersionFileMW => VersionInfo.VersionFile;
+        public uint LINKDATASizeMW => VersionInfo.LINKDATASize;
         public ObservableProperty<uint> LinkdataEntries { get; set; } = new ObservableProperty<uint>() { };
         public VersionInformation VersionInfo { get; set; } = new VersionInformation();
         public ICommand CommandLinkdataPathUpdate { get; private set; }
@@ -42,6 +76,7 @@ namespace DQB2TextEditor
         public ObservableProperty<TextUnpack> UnpackedText { get; set; } = new ObservableProperty<TextUnpack>();
         public Dialogue UnpackedDialogue;
         private List<Dialogue> FullDialogueList;
+        public int DialogueListSize => FullDialogueList.Count;
         private List<Dialogue> FullIndependentTextList;
 
         public bool JPPopup
@@ -59,6 +94,7 @@ namespace DQB2TextEditor
         private System.Windows.Controls.ScrollViewer ForUpdatingText;
         private System.Windows.Controls.ListBox ForUpdatingTextList;
         private System.Windows.Controls.Label Saving;
+        private DockPanel DisableOnLoad;
         private CutsceneBrowser window;
         public bool PreviewText
         {
@@ -118,14 +154,21 @@ namespace DQB2TextEditor
         {
             CreateIdxList();
         }
-        public void ContextChangeTwo(System.Windows.Controls.ListBox listBox, System.Windows.Controls.ScrollViewer textBox, System.Windows.Controls.ListBox rawListBox, System.Windows.Controls.Label Saving, CutsceneBrowser JustHaveItWhatever)
+        public void ContextChangeTwo(ListBox listBox, ScrollViewer textBox, ListBox rawListBox, Label Saving, CutsceneBrowser JustHaveItWhatever,DockPanel DisableOnLoad)
         {
             ForUpdatingBindings = listBox;
             ForUpdatingText = textBox;
             ForUpdatingTextList = rawListBox;
             this.Saving = Saving;
+            this.DisableOnLoad = DisableOnLoad;
             window = JustHaveItWhatever;
         }
+        public void DumpWindow()
+        {
+            DumpCode Window = new DumpCode(LinkdataPath.Value, VersionInfo);
+            Window.Show();
+        }
+        
         private void ExportSelectedTxt(object param)
         {
             String Filename = "DialogueText" + CurrentDialogue.Value.DialogueIndex.ToString("D5");
@@ -137,7 +180,7 @@ namespace DQB2TextEditor
                 Filter = "*.txt|*.txt",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -171,7 +214,7 @@ namespace DQB2TextEditor
                 FileName = "FlowData" + CurrentDialogue.Value.DialogueIndex.ToString("D5")
             };
 
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -188,7 +231,7 @@ namespace DQB2TextEditor
                 Filter = "*.unpack|*.unpack",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -206,7 +249,7 @@ namespace DQB2TextEditor
                 Filter = "*.txt|*.txt",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -239,7 +282,7 @@ namespace DQB2TextEditor
                 Filter = "*.unpack|*.unpack",
                 FileName = "FlowData" + UnpackedDialogue.DialogueIndex.ToString("D5")
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -255,7 +298,7 @@ namespace DQB2TextEditor
                 Filter = "*.unpack|*.unpack"
             };
 
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -276,7 +319,7 @@ namespace DQB2TextEditor
                 Filter = "*.unpack|*.unpack",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -291,7 +334,7 @@ namespace DQB2TextEditor
                 Filter = "*.unpack|*.unpack"
             };
 
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -310,7 +353,7 @@ namespace DQB2TextEditor
                 Filter = "*.txt|*.txt",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -336,7 +379,7 @@ namespace DQB2TextEditor
                 Filter = "*.txt|*.txt",
                 FileName = Filename
             };
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -358,7 +401,7 @@ namespace DQB2TextEditor
             {
                 Filter = "*.txt|*.TXT"
             };
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialog.ShowDialog() == false)
             {
                 return;
             }
@@ -379,14 +422,8 @@ namespace DQB2TextEditor
             dlg.Filter = "LINKDATA|LINKDATA.IDX";
             if (dlg.ShowDialog() == false) return;
 
-            FileInfo fileInfo = new FileInfo(dlg.FileName);
-            LinkdataEntries.Value = (uint)(fileInfo.Length / 32);
-
-            LinkdataPath.Value = dlg.FileName;
+            ChangeLinkdataPath = dlg.FileName;
             LinkdataPath.NotifyValue();
-            if (VersionInfo.LINKDATASize != LinkdataEntries.Value) ConfirmEnabled.Value = false;
-            else ConfirmEnabled.Value = true;
-            ConfirmEnabled.NotifyValue();
         }
         private void mLoadDialogue()
         {
@@ -560,17 +597,24 @@ namespace DQB2TextEditor
             FullIndependentTextList = List;
             FilterList(null);
         }
+
+        WeakReference<Byte[]> LinkData = null;
+        WeakReference<Byte[]> LinkDataIdx = null;
         private (Byte[], Byte[]) UnpackIDXFiles(IDX Cutscene, IDX idx)
         {
-            String path = LinkdataPath.Value;
-            if (!System.IO.File.Exists(path)) return (null, null);
-            path = path.Substring(0, path.Length - 3) + "BIN";
-            if (!System.IO.File.Exists(path)) return (null, null);
+            Byte[] bin = null;
+            if (!(LinkData != null && LinkData.TryGetTarget(out bin)))
+            {
+                String path = LinkdataPath.Value;
+                if (!System.IO.File.Exists(path)) return (null, null);
+                path = path.Substring(0, path.Length - 3) + "BIN";
+                if (!System.IO.File.Exists(path)) return (null, null);
 
-            if (Cutscene == null || idx == null) return (null, null);
+                if (Cutscene == null || idx == null) return (null, null);
 
-            Byte[] bin = System.IO.File.ReadAllBytes(path);
-
+                bin = System.IO.File.ReadAllBytes(path);
+                LinkData = new WeakReference<Byte[]>(bin);
+            }
             //Cutscene
             Byte[] CutsceneBuffer = new Byte[(uint)Cutscene.UncompressedSize];
             Array.Copy(bin, (int)Cutscene.Offset, CutsceneBuffer, 0, CutsceneBuffer.Length);
@@ -596,15 +640,20 @@ namespace DQB2TextEditor
             }
             return (CutsceneBuffer, bufferUncompressed);
         }
+
         private Byte[] UnpackIDXFiles(IDX idx)
         {
-            String path = LinkdataPath.Value;
-            if (!System.IO.File.Exists(path)) return null;
-            path = path.Substring(0, path.Length - 3) + "BIN";
-            if (!System.IO.File.Exists(path)) return null;
+            Byte[] bin = null;
+            if (!(LinkData != null && LinkData.TryGetTarget(out bin)))
+            {
+                String path = LinkdataPath.Value;
+                if (!System.IO.File.Exists(path)) return null;
+                path = path.Substring(0, path.Length - 3) + "BIN";
+                if (!System.IO.File.Exists(path)) return null;
 
-            Byte[] bin = System.IO.File.ReadAllBytes(path);
-
+                bin = System.IO.File.ReadAllBytes(path);
+                LinkData = new WeakReference<Byte[]>(bin);
+            }
             //Text File
             int size = (int)idx.UncompressedSize;
             Byte[] buffer = new Byte[size];
@@ -645,10 +694,13 @@ namespace DQB2TextEditor
                 idxzrc.ReadInternal(importFile);
                 size = idxzrc.UncompressedSize;
             }
-
+            Byte[] link_bin = null;
             Byte[] link_idx = System.IO.File.ReadAllBytes(LinkdataPath.Value);
-            Byte[] link_bin = System.IO.File.ReadAllBytes(path);
-
+            if(!LinkData.TryGetTarget(out link_bin))
+            {
+                link_bin = System.IO.File.ReadAllBytes(path);
+                LinkData = new WeakReference<Byte[]>(link_bin);
+            };
             // offset = after - original
             // original file
             int offset = ((int)idx.CompressedSize + 0x80) / 0x100 * 0x100;

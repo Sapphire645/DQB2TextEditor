@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -45,30 +46,77 @@ namespace DQB2TextEditor.code
         public void SaveTxtFile(String path, bool processed)
         {
             System.IO.File.Delete(path);
-            foreach (DialogueEntry EntryVisual in Text)
-            {
-                Entry Entry = EntryVisual.Entry.Value;
-                String Append = "";
-                if (CutsceneFile != null)
-                    Append = Entry.FullCommand.Trim() + "\t";
-                if (processed)
+            if (IsCutscene)
+                foreach (DialogueEntry EntryVisual in Text)
                 {
-                    StringBuilder stringBuilder = new StringBuilder(Append); //Alright fiine I'll use stringbuilder
-
-                    foreach (Inline inline in Entry.LineProcess().Inlines)
+                    Entry Entry = EntryVisual.Entry.Value;
+                    String Append = "";
+                    if (CutsceneFile != null)
+                        Append = Entry.FullCommand.Trim() + "\t";
+                    if (processed)
                     {
-                        if (inline is Run run)
-                            stringBuilder.Append(run.Text);
-                        else
-                            if(inline is InlineUIContainer contain) //Might add a value to switch to the katakana
-                                stringBuilder.Append(((TextBlock)((Grid)contain.Child).Children[1]).Text); 
+                        StringBuilder stringBuilder = new StringBuilder(Append); //Alright fiine I'll use stringbuilder
+
+                        foreach (Inline inline in Entry.LineProcess().Inlines)
+                        {
+                            if (inline is Run run)
+                                stringBuilder.Append(run.Text);
+                            else
+                                if (inline is InlineUIContainer contain) //Might add a value to switch to the katakana
+                                stringBuilder.Append(((TextBlock)((Grid)contain.Child).Children[1]).Text);
+                        }
+                        System.IO.File.AppendAllText(path, stringBuilder.ToString() + "\n", Encoding.UTF8);
                     }
-                    System.IO.File.AppendAllText(path, stringBuilder.ToString() + "\n", Encoding.UTF8);
+                    else
+                        System.IO.File.AppendAllText(path, Append + Entry.Line + "\n", Encoding.UTF8);
+                }
+            else
+                if (RawTextShow)
+                {
+                    Entry EntryTemp = new Entry("","",0);
+                    foreach (string line in RawText.Split("\n"))
+                        if (processed)
+                        {
+                            EntryTemp.Line = line.Split("\t").Last();
+                            StringBuilder stringBuilder = new StringBuilder(""); //Alright fiine I'll use stringbuilder
+
+                            foreach (Inline inline in EntryTemp.LineProcess().Inlines)
+                            {
+                                if (inline is Run run)
+                                    stringBuilder.Append(run.Text);
+                                else
+                                    if (inline is InlineUIContainer contain) //Might add a value to switch to the katakana
+                                    stringBuilder.Append(((TextBlock)((Grid)contain.Child).Children[1]).Text);
+                            }
+                            System.IO.File.AppendAllText(path, stringBuilder.ToString() + "\n", Encoding.UTF8);
+                        }
+                        else
+                            System.IO.File.AppendAllText(path, line.Split("\t").Last() + "\n", Encoding.UTF8);
                 }
                 else
-                    System.IO.File.AppendAllText(path, Append + Entry.Line+"\n", Encoding.UTF8);
-            }
-            
+                    foreach (TextEntry EntryVisual in RawTextAttempt)
+                    {
+                        Entry Entry = EntryVisual.Entry.Value;
+                        String Append = "";
+                        if (CutsceneFile != null)
+                            Append = Entry.FullCommand.Trim() + "\t";
+                        if (processed)
+                        {
+                            StringBuilder stringBuilder = new StringBuilder(Append); //Alright fiine I'll use stringbuilder
+
+                            foreach (Inline inline in Entry.LineProcess().Inlines)
+                            {
+                                if (inline is Run run)
+                                    stringBuilder.Append(run.Text);
+                                else
+                                    if (inline is InlineUIContainer contain) //Might add a value to switch to the katakana
+                                    stringBuilder.Append(((TextBlock)((Grid)contain.Child).Children[1]).Text);
+                            }
+                            System.IO.File.AppendAllText(path, stringBuilder.ToString() + "\n", Encoding.UTF8);
+                        }
+                        else
+                            System.IO.File.AppendAllText(path, Append + Entry.Line + "\n", Encoding.UTF8);
+                    }
         }
         public TextUnpack(byte[] cutsceneFile, byte[] textFile)
 		{
@@ -112,7 +160,7 @@ namespace DQB2TextEditor.code
         {
             EntryCountPointerStart = BitConverter.ToInt32(TextFile, 0);
             CheckEntryCount();
-            if (EntryCount > 1024) //It dies.
+            if (RawTextShow) //It dies.
             {
                 for (int pointerOffset = 0; pointerOffset < EntryCount; pointerOffset++)
                 {
@@ -390,6 +438,63 @@ namespace DQB2TextEditor.code
                 pointerOffset++;
             }
         }
+
+
+        public static string TextDump(byte[] FlowDataFile, byte[] TextFile)
+        {
+            var EntryCount = BitConverter.ToInt32(TextFile, 0);
+            string line = null;
+            StringBuilder lineFinal = new StringBuilder();
+            ushort PointerToPointerStart = 0x40;
+            ushort EntrySize = 0x34;
+            int PointersStart = PointerToPointerStart + EntryCount * 4;
+            int PointerNext = BitConverter.ToInt32(TextFile, PointersStart);
+            for (int pointerOffset = 0; pointerOffset < EntryCount; pointerOffset++)
+            {
+                if (pointerOffset < EntryCount - 1)
+                {
+
+                    int PointerCurrent = PointerNext;
+                    PointerNext = BitConverter.ToInt32(TextFile, PointersStart + (pointerOffset + 1) * 4);
+                    if (PointerCurrent + PointersStart + pointerOffset * 4 < 0 || PointerNext + 4 - PointerCurrent < 0) line = "";
+                    else line = System.Text.Encoding.UTF8.GetString(TextFile, PointerCurrent + PointersStart + pointerOffset * 4, PointerNext + 4 - PointerCurrent);
+                }
+                else
+                {
+                    int PointerCurrent = PointerNext;
+                    if (TextFile.Length - (PointerCurrent + PointersStart + pointerOffset * 4) < 0 || PointerCurrent + PointersStart + pointerOffset * 4 < 0) line = "";
+                    else line = System.Text.Encoding.UTF8.GetString(TextFile, PointerCurrent + PointersStart + pointerOffset * 4, TextFile.Length - (PointerCurrent + PointersStart + pointerOffset * 4));
+                }
+                var entry = new Entry(line, pointerOffset);
+                if(FlowDataFile != null)
+                {
+                    if (!(entry.PointerOffset >= FlowDataFile.Length / EntrySize))
+                    {
+                        int[] Arguments = new int[11];
+                        for (int ArgIndex = 0; ArgIndex < 11; ArgIndex++)
+                            Arguments[ArgIndex] = BitConverter.ToInt32(FlowDataFile, entry.PointerOffset * EntrySize + ArgIndex * 4);
+                        entry.Arguments = Arguments;
+                        entry.Command = BitConverter.ToUInt16(FlowDataFile, entry.PointerOffset * EntrySize + 0x2E);
+                        entry.LastArgument = BitConverter.ToInt32(FlowDataFile, entry.PointerOffset * EntrySize + 0x30) == 1;
+                    }
+                    else
+                    {
+                        if (line == "\0") continue;
+                    }
+                    line = entry.LineProcessDump();
+                    line = line.Replace(Environment.NewLine, Environment.NewLine + "\t\t");
+                    lineFinal.AppendLine(entry.FullCommand + "\n\t\t" + line);
+                }
+                else
+                {
+                    if (line == "\0") continue;
+                    line = entry.LineProcessDump();
+                    line = line.Replace(Environment.NewLine, "<br>");
+                    lineFinal.AppendLine(line);
+                }
+            }
+            return lineFinal.ToString();
+        }
     }
 
     public class Entry
@@ -402,7 +507,7 @@ namespace DQB2TextEditor.code
         public bool LastArgumentVisual { get { return LastArgument; }  set { LastArgument = !LastArgument; } }
         public bool LastArgument { get; set; }
         public string Name => VersionInformation.JapaneseMode ? null : ShowName != null ? ShowName : GetName();
-        public Visibility NameVisible => Name != null ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility NameVisible => Name != null && !Line.Contains("<off>") ? Visibility.Visible : Visibility.Collapsed;
         private string ShowName { get{
                 if (Line.Contains("<show("))
                     return Regex.Match(Line, @"<show\((.*?)\)>").Groups[1].Value;
@@ -415,6 +520,16 @@ namespace DQB2TextEditor.code
                 if (Line.Contains("<off>"))
                     return System.Windows.Media.Brushes.Transparent;
                 return System.Windows.Media.Brushes.Black;
+            }
+            set { }
+        }
+        public System.Windows.Media.SolidColorBrush Foreground
+        {
+            get
+            {
+                if (Line.Contains("<off>"))
+                    return (SolidColorBrush)Application.Current.FindResource("DarkBorderBrush");
+                return System.Windows.Media.Brushes.White;
             }
             set { }
         }
@@ -431,6 +546,9 @@ namespace DQB2TextEditor.code
         {
             var LineProcessed = Line.Replace("<6>", "‛");
             LineProcessed = LineProcessed.Replace("<9>", "’");
+            LineProcessed = LineProcessed.Replace("<66>", "“");
+            LineProcessed = LineProcessed.Replace("<99>", "”");
+            LineProcessed = LineProcessed.Replace("<1>", "`");
             if (VersionInformation.JapaneseMode)
             {
                 var name = ShowName != null ? ShowName : GetName();
@@ -442,10 +560,12 @@ namespace DQB2TextEditor.code
                 {
                     LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
                 }
+                LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => VersionInformation.NamesPreview[int.Parse(match.Groups[1].Value) - 1]);
             }
-            else
+            else 
             {
                 LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
+                LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => VersionInformation.NamesPreview[int.Parse(match.Groups[1].Value) - 1]);
             }
 
             LineProcessed = LineProcessed.Replace("<key>", "");
@@ -583,6 +703,68 @@ namespace DQB2TextEditor.code
                 Arguments.CopyTo(NewVal.Arguments, 0);
             }
             return NewVal;
+        }
+        public String LineProcessDump()
+        {
+            var LineProcessed = Line.Replace("<6>", "‛");
+            LineProcessed = LineProcessed.Replace("<9>", "’");
+            LineProcessed = LineProcessed.Replace("<66>", "“");
+            LineProcessed = LineProcessed.Replace("<99>", "”");
+            LineProcessed = LineProcessed.Replace("<1>", "`");
+            if (VersionInformation.JapaneseMode)
+            {
+                var name = ShowName != null ? ShowName : GetName();
+                if (name != null && name.Length > 1)
+                {
+                    LineProcessed = name + "「" + LineProcessed;
+                    LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine + "    ");
+                    LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => VersionInformation.NamesPreview[int.Parse(match.Groups[1].Value) - 1]);
+                }
+                else
+                {
+                    LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
+                    LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => VersionInformation.NamesPreview[int.Parse(match.Groups[1].Value) - 1]);
+                }
+            }
+            else
+            {
+                LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
+            }
+
+            LineProcessed = LineProcessed.Replace("<key>", "");
+
+            LineProcessed = LineProcessed.Replace("<scron>", "");
+            LineProcessed = LineProcessed.Replace("<scroff>", "");
+            LineProcessed = LineProcessed.Replace("<off>", "");
+            LineProcessed = LineProcessed.Replace("<-->", "─");
+            LineProcessed = LineProcessed.Replace("<--->", "⎯⎯ ");
+            LineProcessed = LineProcessed.Replace("<note>", "♩");
+            LineProcessed = LineProcessed.Replace("<pname>", VersionInformation.PlayerNameDefault);
+            LineProcessed = Regex.Replace(LineProcessed, @"<show\((.*?)\)>", ""); //Name
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$iicon\((.*?)\)>", "⧉"); //Icon
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$kicon\((.*?)\)>", "⧉"); //Icon
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$icon\((.*?)\)>", "⧉"); //Icon
+            LineProcessed = Regex.Replace(LineProcessed, @"<button\((.*?)\)>", "◎"); //Button
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$ui\((.*?)\)>", "Ⓤ"); //
+
+            LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[VersionInformation.PlayerGender ? 2 : 1].Value);
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$iname\((\d+)\)>", match => VersionInformation.ItemsPreview[int.Parse(match.Groups[1].Value)]);
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$sgl_iname\((\d+)\)>", match => VersionInformation.ItemsPreview[int.Parse(match.Groups[1].Value)]);
+
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$plr_iname\((\d+)\)>", match => VersionInformation.ItemsPreview[int.Parse(match.Groups[1].Value)] + "(/s)");
+
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$plr_kbname\((\d+)\)>", match => "(kname " + match.Groups[1].Value + "s)");
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$sgl_kname\((\d+)\)>", match => "(kname " + match.Groups[1].Value + ")");
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$kname\((\d+)\)>", match => "(kname " + match.Groups[1].Value + ")");
+            LineProcessed = Regex.Replace(LineProcessed, @"(?<=<cap>)[a-zA-Z]", match => match.Value.ToUpper());
+            LineProcessed = LineProcessed.Replace("<cap>", "");
+
+            LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$cdef\((.*?)\)>", "");
+            LineProcessed = Regex.Replace(LineProcessed, @"</color>", "");
+
+            LineProcessed = Regex.Replace(LineProcessed, @"<(.*?):(.*?)>", match => match.Groups[1].Value);
+            return LineProcessed;
         }
     }
 }

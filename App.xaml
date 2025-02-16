@@ -32,6 +32,33 @@
             <Setter Property="Background" Value="{StaticResource DarkBackdropBrush}" />
             <Setter Property="Foreground" Value="{StaticResource DarkBackgroundBrush}" />
         </Style>
+        <Style TargetType="ProgressBar">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <!-- Background border with rounded corners -->
+                            <Border 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                                <Border 
+                                    x:Name="PART_Track" 
+                                    Background="{TemplateBinding Background}" 
+                                    CornerRadius="10"/>
+                            </Border>
+                            <!-- Foreground border with rounded corners -->
+                            <Border 
+                                x:Name="PART_Indicator" 
+                                Background="{TemplateBinding Foreground}" 
+                                HorizontalAlignment="Left" 
+                                CornerRadius="10"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}" />
             <Setter Property="Foreground" Value="{StaticResource DarkLightBrush}" />
