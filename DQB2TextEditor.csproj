@@ -1,53 +1,33 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>false</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <Subsystem>console</Subsystem>
   </PropertyGroup>
-
   <ItemGroup>
-    <None Remove="info\CODE.txt" />
-    <None Remove="info\OPCodes.txt" />
-    <None Remove="info\Preview.txt" />
-    <None Remove="info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
-    <None Remove="info\versions\Switch-Demo-EU-1.0.txt" />
-    <None Remove="info\versions\Switch-EU-1.5.2.txt" />
-    <None Remove="info\versions\Switch-JumboDemo-EU-1.1.txt" />
-    <None Remove="info\versions\Switch-JumboDemo-JP-1.1.txt" />
-    <None Remove="info\versions\Switch-Release-EU-1.5.2.txt" />
-    <None Remove="resource\icon.png" />
+    <None Remove="Info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
+    <None Remove="Info\versions\Steam1.7.2_1.7.3d.txt" />
+    <None Remove="Info\versions\Switch-Demo-EU-1.0-JumboDemo-EU-1.1.txt" />
+    <None Remove="Info\versions\Switch-Demo-EU-1.0.txt" />
+    <None Remove="Info\versions\Switch-JumboDemo-EU-1.1.txt" />
+    <None Remove="Info\versions\Switch-JumboDemo-JP-1.1.txt" />
+    <None Remove="Info\versions\Switch-Release-EU-1.5.2.txt" />
   </ItemGroup>
-
   <ItemGroup>
-    <Content Include="info\CODE.txt">
+    <Content Include="Info\versions\Steam1.7.2_1.7.3d.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="info\OPCodes.txt">
+    <Content Include="Info\versions\Switch-Demo-EU-1.0-JumboDemo-EU-1.1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="info\Preview.txt">
+    <Content Include="Info\versions\Switch-JumboDemo-JP-1.1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt">
+    <Content Include="Info\versions\Switch-Release-EU-1.5.2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="info\versions\Switch-Demo-EU-1.0.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="info\versions\Switch-JumboDemo-EU-1.1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="info\versions\Switch-JumboDemo-JP-1.1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="info\versions\Switch-Release-EU-1.5.2.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="resource\icon.png" />
   </ItemGroup>
-
 </Project>
