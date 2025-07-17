@@ -21,9 +21,9 @@ namespace DQB2TextEditor.Windows
     public partial class TextEditorWindow : Window
     {
         private ViewModel viewModel;
-        public TextEditorWindow(LINKDATA linkdata)
+        public TextEditorWindow(SLViewModel SLVM)
         {
-            viewModel = new ViewModel(linkdata);
+            viewModel = new ViewModel(SLVM,this);
             DataContext = viewModel;
             InitializeComponent();
 
@@ -37,6 +37,29 @@ namespace DQB2TextEditor.Windows
         private void Dialogues_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+    }
+
+        private void Preview_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.UpdatePreviewText();
+        }
+
+        private void SizeUpdate(object sender, SizeChangedEventArgs e)
+        {
+            viewModel.UpdateWidth();
         }
     }
 }

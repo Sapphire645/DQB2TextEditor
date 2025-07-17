@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DQB2TextEditor.Windows"
         mc:Ignorable="d"
-        Title="TextEditor" Height="450" Width="800" Background="Black" MinWidth="900">
-    <DockPanel>
+        Title="DQB2 Text Editor V2" Height="450" Width="800" Background="Black" MinWidth="900" MinHeight="200" SizeChanged="SizeUpdate">
+    <DockPanel Margin="2">
         <Border Background="{StaticResource DarkBlueBrush}" DockPanel.Dock="Bottom" Margin="2,1,2,2" CornerRadius="5">
             <Grid Margin="0,7">
                 <Grid.ColumnDefinitions>
@@ -32,10 +32,10 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Flow Data" FontWeight="Bold" Margin="8,0"/>
-                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Column="1" Margin="8,0"/>
-                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Column="2" Margin="8,0"/>
-                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Column="3" Margin="8,0"/>
+                    <TextBlock Text="Flow Data" FontWeight="Bold" Margin="8,0"  Foreground="{StaticResource FlowDataBold}"/>
+                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Column="1" Margin="8,0" Foreground="{StaticResource FlowData}"/>
+                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Column="2" Margin="8,0" Foreground="{StaticResource FlowData}"/>
+                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Column="3" Margin="8,0" Foreground="{StaticResource FlowData}"/>
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataIndex}" Foreground="White" Grid.Row="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataOffset}" Foreground="White" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataCompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
@@ -53,10 +53,10 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Text Data" FontWeight="Bold" Margin="8,0"/>
-                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Column="1" Margin="8,0"/>
-                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Column="2" Margin="8,0"/>
-                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Column="3" Margin="8,0"/>
+                    <TextBlock Text="Text Data" FontWeight="Bold" Margin="8,0" Foreground="{StaticResource TextDataBold}"/>
+                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Column="1" Margin="8,0" Foreground="{StaticResource TextData}"/>
+                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Column="2" Margin="8,0" Foreground="{StaticResource TextData}"/>
+                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Column="3" Margin="8,0" Foreground="{StaticResource TextData}"/>
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataIndex}" Grid.Row="1" Foreground="White" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataOffset}" Foreground="White" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataCompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
@@ -64,101 +64,132 @@
                 </Grid>
             </Grid>
         </Border>
-        
-        <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,3,2,1">
-            <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Entry List" Background="Black">
-                <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
-                    <!--DIALOGUE/TEXT-->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <!-- Left pane -->
-                            <ColumnDefinition Width="5" />
-                            <!-- Splitter -->
-                            <ColumnDefinition Width="*" />
-                            <!-- Right pane -->
-                        </Grid.ColumnDefinitions>
+        <Grid>
 
-                        <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,3,2,2">
-                            <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" 
+
+            <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,3,2,1">
+                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Entry List" Background="Black">
+                    <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
+                        <!--DIALOGUE/TEXT-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <!-- Left pane -->
+                                <ColumnDefinition Width="5" />
+                                <!-- Splitter -->
+                                <ColumnDefinition Width="*" />
+                                <!-- Right pane -->
+                            </Grid.ColumnDefinitions>
+                            <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,3,2,2">
+                                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" 
              Header="Dialogue Entries" Background="Black">
-                                <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
-                                    <DockPanel>
-                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top"> 
-                                            <TextBlock Text="Nº" Foreground="White" HorizontalAlignment="Center" Margin="8,0,24,0"/>
-                                            <TextBlock Text="Index" Foreground="White" HorizontalAlignment="Center" Margin="10,0"/>
-                                            <TextBlock Text="Offset" Foreground="White" HorizontalAlignment="Center" Margin="22,0"/>
-                                            <TextBlock Text="C. Size" Foreground="White" HorizontalAlignment="Center" Margin="12,0"/>
-                                            <TextBlock Text="U. Size" Foreground="White" HorizontalAlignment="Center" Margin="13,0"/>
-                                        </StackPanel>
-                                        <ListBox Background="Black"  BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                    <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
+                                        <DockPanel>
+                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                                                <TextBlock Text="Nº" Foreground="White" HorizontalAlignment="Center" Margin="8,0,24,0"/>
+                                                <TextBlock Text="Index" Foreground="White" HorizontalAlignment="Center" Margin="10,0"/>
+                                                <TextBlock Text="Offset" Foreground="White" HorizontalAlignment="Center" Margin="22,0"/>
+                                                <TextBlock Text="C. Size" Foreground="White" HorizontalAlignment="Center" Margin="12,0"/>
+                                                <TextBlock Text="U. Size" Foreground="White" HorizontalAlignment="Center" Margin="13,0"/>
+                                            </StackPanel>
+                                            <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Grid.Column="4" >
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding Index}" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="26"/>
+                                                            <UniformGrid Columns="4" Rows="2"  Grid.Column="1" HorizontalAlignment="Center" Margin="5,0" >
+                                                                <TextBlock Text="{Binding FlowDataIndex}" Grid.Column="1" HorizontalAlignment="Center" Foreground="{StaticResource FlowData}"/>
+                                                                <TextBlock Text="{Binding FlowDataOffset}" Grid.Column="2" HorizontalAlignment="Center" Foreground="{StaticResource FlowData}"/>
+                                                                <TextBlock Text="{Binding FlowDataCompressedSize}" Grid.Column="3" HorizontalAlignment="Center" Foreground="{StaticResource FlowData}"/>
+                                                                <TextBlock Text="{Binding FlowDataUncompressedSize}" Grid.Column="4" HorizontalAlignment="Center" Foreground="{StaticResource FlowData}"/>
+
+                                                                <TextBlock Text="{Binding TextDataIndex}" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataOffset}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataCompressedSize}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataUncompressedSize}" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                            </UniformGrid>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </DockPanel>
+                                    </Border>
+                                </TabItem>
+                                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" 
+        Header="General Text Entries" Background="Black">
+                                    <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
+
+                                    </Border>
+                                </TabItem>
+                            </TabControl>
+
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="220,0,0,0">
+                                <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Export...  " Margin="2" Click="ExportMenu_Click">
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:Name="ExportMenu">
+                                            <MenuItem Header="Sub-option 1"/>
+                                            <MenuItem Header="Sub-option 2"/>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
+                                <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Import...  " Margin="2">
+                                        <Button.ContextMenu>
+                                            <ContextMenu x:Name="ImportMenu">
+                                                <MenuItem Header="Sub-option 1" />
+                                                <MenuItem Header="Sub-option 2" />
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                    </Button>
+                            </StackPanel>
+                            <Button IsEnabled="{Binding selected}" Content="  Preview  " Click="Preview_Click" VerticalAlignment="Top" Margin="2" HorizontalAlignment="Right"/>
+                            <GridSplitter Grid.Column="1"
+                                  Width="6"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Background="{StaticResource DarkBlueBrush}"
+                                  ShowsPreview="True"/>
+                            <Line Y1="0" X2="1" X1="1" Y2="20" StrokeDashArray="0.25 2" StrokeDashCap="Round" IsHitTestVisible="False" Stroke=" Gray" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
+
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Preview Text:" Margin="5"/>
+                                <TextBlock Text="Bind selection!!" HorizontalAlignment="Right" Margin="5"/>
+                                <Border Name="BorderPreview" Grid.Row="1" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2" Margin="2">
+                                    <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding TextLinesPreview}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Grid.Column="4" >
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Text="{Binding Index}" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="26"/>
-                                                    <UniformGrid Columns="4" Rows="2"  Grid.Column="1" HorizontalAlignment="Center" Margin="5,0">
-                                                        <TextBlock Text="{Binding FlowDataIndex}" Foreground="White" Grid.Column="1" HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding FlowDataOffset}" Foreground="White" Grid.Column="2" HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding FlowDataCompressedSize}" Foreground="White" Grid.Column="3" HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding FlowDataUncompressedSize}" Foreground="White" Grid.Column="4" HorizontalAlignment="Center"/>
-
-                                                        <TextBlock Text="{Binding TextDataIndex}" Grid.Row="1" Foreground="White" Grid.Column="1"  HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding TextDataOffset}" Foreground="White" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding TextDataCompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding TextDataUncompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center"/>
-                                                    </UniformGrid>
-                                                </Grid>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding .}" TextWrapping="WrapWithOverflow" MaxWidth="{Binding DataContext.TextWidth, RelativeSource={RelativeSource AncestorType=ListBox}}" MinHeight="50"/>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
-                                    </DockPanel>
                                 </Border>
-                            </TabItem>
-                            <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" 
-        Header="General Text Entries" Background="Black">
-                                <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
-
-                                </Border>
-                            </TabItem>
-                        </TabControl>
-                        <GridSplitter Grid.Column="1"
-                      Width="4"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      Background="{StaticResource DarkBlueBrush}"
-                      ShowsPreview="True"/>
-
-                        <Grid Grid.Column="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="Preview Text:" Margin="5"/>
-                            <TextBlock Text="Bind selection!!" HorizontalAlignment="Right" Margin="5"/>
-                            <Border Grid.Row="1" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2" Margin="2">
-                                <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding TextLinesPreview}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="{Binding .}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    
-                </Border>
-            </TabItem>
-            <TabItem  Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Edit Entry" Background="Black" BorderThickness="0">
-                <ScrollBar/>
-            </TabItem>
-        </TabControl>
 
+                    </Border>
+                </TabItem>
+                <TabItem  Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Edit Entry" Background="Black" BorderThickness="0">
+                    <ScrollBar/>
+                </TabItem>
+            </TabControl>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="130,2,0,0">
+                <TextBlock Text="Langauage:" Margin="5,0" VerticalAlignment="Center"/>
+                <ComboBox SelectedIndex="{Binding CurrentLanguage}" ItemContainerStyle="{DynamicResource ComboBoxItemContainer}" ItemsSource="{Binding linkdata.Languages}" MinWidth="100"/>
+                <TextBlock Margin="5,0" Text="{Binding linkdata.LINKDATAPath}" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Background="Black" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4">
+                <TextBlock Text="Version:" Margin="4,0"/>
+                <TextBlock Text="{Binding linkdata.LINKDATAVersion}" Foreground="Gold" HorizontalAlignment="Right" Margin="4,0"/>
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </Window>

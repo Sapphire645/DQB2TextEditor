@@ -45,7 +45,7 @@ namespace DQB2TextEditor.Windows
         private void Confirm_Click(object sender, RoutedEventArgs e)
         {
 
-            TextEditorWindow window = new TextEditorWindow(ViewModel.CreateLINKDATA());
+            TextEditorWindow window = new TextEditorWindow(ViewModel);
             window.Show();
             this.Close();
         }
@@ -124,7 +124,6 @@ namespace DQB2TextEditor.Windows
                 }
             }
         }
-
         public LINKDATA CreateLINKDATA()
         {
             return new LINKDATA(LinkdataPath, _size);

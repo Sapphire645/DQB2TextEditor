@@ -14,7 +14,7 @@ namespace DQB2TextEditor.Linkdata
         public bool IsCompressed { get; set; }
         public ushort Index { get; private set; }
         internal LDFolder LINKDATAData { get; private set; }
-        public LINKDATAEntry(ushort index, byte[] bytes)
+        public LINKDATAEntry(ushort index, byte[] bytes, FolderType Type)
         {
             Index = index;
             Offset = BitConverter.ToUInt64(bytes, 0);
@@ -22,7 +22,20 @@ namespace DQB2TextEditor.Linkdata
             CompressedSize = BitConverter.ToUInt64(bytes, 16);
             IsCompressed = BitConverter.ToUInt64(bytes, 24) > 0 ? true : false;
 
-            LINKDATAData = new LDFolder(this);
+            switch (Type)
+            {
+                case FolderType.TextData:
+                    LINKDATAData = new LDFolder_TextData(this);
+                    break;
+                case FolderType.FlowData:
+                    LINKDATAData = new LDFolder(this);
+                    break;
+               case FolderType.Unknown:
+                    LINKDATAData = new LDFolder(this);
+                    break;
+            }
         }
+
+
     }
 }

@@ -25,6 +25,7 @@ namespace DQB2TextEditor.InfoReading
 
         public LINKDATAVersion(string path)
         {
+            VersionName = Path.GetFileNameWithoutExtension(path);
             if (!File.Exists(path)) throw new Exception($"What the fuck. Did you delete the {path} file why would you do thaaaaat");
             String[] lines = System.IO.File.ReadAllLines(path);
             var Current = -1;
