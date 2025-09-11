@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.TextFormatting;
 
@@ -41,10 +42,16 @@ namespace DQB2TextEditor.Windows
 
         public static byte _currentLanguage = 0;
         public bool selected => _selectedTextGroup != null;
+        public bool editing => _editingTextGroup != null;
+
+        public Visibility selectedVisibility => _selectedTextGroup != null ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility editingVisibility => _editingTextGroup != null ? Visibility.Visible : Visibility.Collapsed;
         public ObservableCollection<Dialogue> Dialogues => linkdata.Dialogues;
         public ObservableCollection<String> TextLinesPreview { get; private set; } = new ObservableCollection<string>() { "aa", "bb" };
 
         private TextGroup _selectedTextGroup;
+
+        private TextGroup _editingTextGroup;
 
         private TextEditorWindow window;
         public int TextWidth => window == null ? 0 : (int)window.BorderPreview.ActualWidth - 34;
@@ -57,13 +64,29 @@ namespace DQB2TextEditor.Windows
                 {
                     _selectedTextGroup = value;
                     OnPropertyChanged(nameof(SelectedTextGroup));
+                    OnPropertyChanged(nameof(selectedVisibility));
                     OnPropertyChanged(nameof(Selection));
                     OnPropertyChanged(nameof(selected));
                 }
             }
         }
+        public TextGroup EditingTextGroup
+        {
+            get { return _editingTextGroup; }
+            set
+            {
+                if (_editingTextGroup != value)
+                {
+                    _editingTextGroup = value;
+                    OnPropertyChanged(nameof(EditingTextGroup));
+                    OnPropertyChanged(nameof(EditedSelection));
+                    OnPropertyChanged(nameof(editingVisibility));
+                    OnPropertyChanged(nameof(editing));
+                }
+            }
+        }
         public string Selection => SelectedTextGroup is Dialogue ? "Dialogue" : "Text";
-
+        public string EditedSelection => EditingTextGroup is Dialogue ? "Dialogue" : "Text";
 
         public ViewModel(SLViewModel SLVM, TextEditorWindow window)
         {

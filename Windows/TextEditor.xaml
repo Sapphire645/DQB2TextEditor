@@ -7,20 +7,45 @@
         mc:Ignorable="d"
         Title="DQB2 Text Editor V2" Height="450" Width="800" Background="Black" MinWidth="900" MinHeight="200" SizeChanged="SizeUpdate">
     <DockPanel Margin="2">
-        <Border Background="{StaticResource DarkBlueBrush}" DockPanel.Dock="Bottom" Margin="2,1,2,2" CornerRadius="5">
-            <Grid Margin="0,7">
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Background="{StaticResource DarkBlueBrush}" Margin="2,1,2,2" CornerRadius="5">
+            </Border>
+            <Border Background="{StaticResource DarkBlueBrush}" Grid.Row="1" Margin="2,1,2,2" CornerRadius="5">
+            </Border>
+            <Grid Margin="0,7" Grid.RowSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="2" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="2" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <UniformGrid Grid.Column="0" Rows="2" HorizontalAlignment="Left" Margin="8,0">
-                    <TextBlock Text="{Binding Path=Selection, StringFormat=Selected {0}}" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding SelectedTextGroup.Index}" Foreground="White" HorizontalAlignment="Center"/>
-                </UniformGrid>
-                <Border Grid.Column="1" Width="2" Background="Black" CornerRadius="2"/>
+                <Grid Grid.Column="0" HorizontalAlignment="Left" Margin="8,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Visibility="{Binding selectedVisibility}" Text="{Binding Path=Selection, StringFormat=Selected {0}}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Visibility="{Binding selectedVisibility}" Text="{Binding SelectedTextGroup.Index}" Foreground="White" Grid.Row="1" HorizontalAlignment="Center"/>
+                    <TextBlock Visibility="{Binding editingVisibility}" Text="{Binding Path=EditedSelection, StringFormat=Editing {0}}" Grid.Row="3" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Visibility="{Binding editingVisibility}" Text="{Binding EditingTextGroup.Index}" Foreground="White" Grid.Row="4" HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Width="2" Background="Black" CornerRadius="2"/>
+                    <Border Width="2" Background="Black" Grid.Row="2" CornerRadius="2"/>
+                </Grid>
                 <Grid Grid.Column="2" HorizontalAlignment="Center" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -29,6 +54,9 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -40,8 +68,25 @@
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataOffset}" Foreground="White" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataCompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.FlowDataUncompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="Flow Data" FontWeight="Bold" Margin="8,0" Grid.Row="3" Foreground="{StaticResource FlowDataBold}"/>
+                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3" Margin="8,0" Foreground="{StaticResource FlowData}"/>
+                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="3" Margin="8,0" Foreground="{StaticResource FlowData}"/>
+                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="3" Margin="8,0" Foreground="{StaticResource FlowData}"/>
+                    <TextBlock Text="{Binding EditingTextGroup.FlowDataIndex}" Foreground="White" Grid.Row="4" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.FlowDataOffset}" Foreground="White" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.FlowDataCompressedSize}" Foreground="White" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.FlowDataUncompressedSize}" Foreground="White" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center"/>
                 </Grid>
-                <Border Grid.Column="3" Width="2" Background="Black" CornerRadius="2"/>
+                <Grid Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Width="2" Background="Black" CornerRadius="2"/>
+                    <Border Width="2" Background="Black" Grid.Row="2" CornerRadius="2"/>
+                </Grid>
                 <Grid Grid.Column="4" HorizontalAlignment="Center" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -50,6 +95,9 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -61,9 +109,18 @@
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataOffset}" Foreground="White" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataCompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding SelectedTextGroup.TextDataUncompressedSize}" Foreground="White" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="Text Data" FontWeight="Bold" Margin="8,0" Grid.Row="3" Foreground="{StaticResource TextDataBold}"/>
+                    <TextBlock Text="Offset" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="8,0" Foreground="{StaticResource TextData}"/>
+                    <TextBlock Text="Compressed Size" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="2" Margin="8,0" Foreground="{StaticResource TextData}"/>
+                    <TextBlock Text="Uncompressed Size" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="3" Margin="8,0" Foreground="{StaticResource TextData}"/>
+                    <TextBlock Text="{Binding EditingTextGroup.TextDataIndex}" Grid.Row="4" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.TextDataOffset}" Foreground="White" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.TextDataCompressedSize}" Foreground="White" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingTextGroup.TextDataUncompressedSize}" Foreground="White" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center"/>
                 </Grid>
             </Grid>
-        </Border>
+        </Grid>
         <Grid>
 
 
@@ -126,7 +183,6 @@
                                     </Border>
                                 </TabItem>
                             </TabControl>
-
                             <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="220,0,0,0">
                                 <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Export...  " Margin="2" Click="ExportMenu_Click">
                                     <Button.ContextMenu>
@@ -137,13 +193,13 @@
                                     </Button.ContextMenu>
                                 </Button>
                                 <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Import...  " Margin="2">
-                                        <Button.ContextMenu>
-                                            <ContextMenu x:Name="ImportMenu">
-                                                <MenuItem Header="Sub-option 1" />
-                                                <MenuItem Header="Sub-option 2" />
-                                            </ContextMenu>
-                                        </Button.ContextMenu>
-                                    </Button>
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:Name="ImportMenu">
+                                            <MenuItem Header="Sub-option 1" />
+                                            <MenuItem Header="Sub-option 2" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
                             </StackPanel>
                             <Button IsEnabled="{Binding selected}" Content="  Preview  " Click="Preview_Click" VerticalAlignment="Top" Margin="2" HorizontalAlignment="Right"/>
                             <GridSplitter Grid.Column="1"
