@@ -23,6 +23,8 @@ namespace DQB2TextEditor.InfoReading
 
         public readonly bool Encrypted = false;
 
+        public readonly List<(int, int)> IndividualText = new List<(int, int)>();
+
         public LINKDATAVersion(string path)
         {
             VersionName = Path.GetFileNameWithoutExtension(path);
@@ -61,7 +63,7 @@ namespace DQB2TextEditor.InfoReading
                         var ValuesT = line.Split('\t');
                         if (ValuesT[0].Equals("l"))
                         {
-                            // IndividualText.Add((int.Parse(ValuesT[1].Split('-').First()), ushort.Parse(ValuesT[1].Split('-')[1]) - ushort.Parse(ValuesT[1].Split('-')[0])));
+                            IndividualText.Add((int.Parse(ValuesT[1].Split('-').First()), ushort.Parse(ValuesT[1].Split('-')[1]) - ushort.Parse(ValuesT[1].Split('-')[0])));
                         }
                         break;
                     default:

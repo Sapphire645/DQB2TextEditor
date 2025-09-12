@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DQB2TextEditor.Windows"
+        xmlns:UC="clr-namespace:DQB2TextEditor.Windows.UserControlFolder"
         mc:Ignorable="d"
-        Title="DQB2 Text Editor V2" Height="450" Width="800" Background="Black" MinWidth="900" MinHeight="200" SizeChanged="SizeUpdate">
+        Title="DQB2 Text Editor V2" Height="450" Width="960" Background="Black" MinWidth="960" MinHeight="200">
     <DockPanel Margin="2">
         <Grid DockPanel.Dock="Bottom">
             <Grid.RowDefinitions>
@@ -144,8 +145,11 @@
         <Grid>
 
 
-            <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,3,2,1">
-                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Entry List" Background="Black">
+            <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,5,2,1">
+                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}"  Background="Black">
+                    <TabItem.Header>
+                        <TextBlock Text="Entry List" FontSize="14"/>
+                    </TabItem.Header>
                     <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
                         <!--DIALOGUE/TEXT-->
                         <Grid>
@@ -169,13 +173,35 @@
                                                 <TextBlock Text="C. Size" Foreground="White" HorizontalAlignment="Center" Margin="12,0"/>
                                                 <TextBlock Text="U. Size" Foreground="White" HorizontalAlignment="Center" Margin="13,0"/>
                                             </StackPanel>
-                                            <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                            <Grid DockPanel.Dock="Bottom"> 
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <Rectangle Fill="{StaticResource DarkBlueBrush}" Grid.ColumnSpan="3" Height="2"/>
+                                                <TextBlock Margin="5,2" Text="Filter:" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+                                                <TextBox Margin="1" BorderThickness="0" Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" TextWrapping="WrapWithOverflow"/>
+                                                <Button Click="Search_Click" Margin="5,2" Content="Search" HorizontalAlignment="Right" Grid.Column="2" Grid.Row="1" Padding="5,0" VerticalContentAlignment="Center" ToolTipService.InitialShowDelay="0" >
+                                                    <Button.ToolTip>
+                                                        <ToolTip Background="Black">
+                                                            <Label Content="WARNING: This will take a long time."/>
+                                                        </ToolTip>
+                                                    </Button.ToolTip>
+                                                </Button>
+                                            </Grid>
+                                            <ListBox SizeChanged="SizeChange" Name="listBox" Background="Black" BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Grid Grid.Column="4" >
+                                                        <Grid Grid.Column="4" MaxWidth="{Binding DataContext.EntryWidth, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto" />
                                                                 <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding Index}" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="26"/>
                                                             <UniformGrid Columns="4" Rows="2"  Grid.Column="1" HorizontalAlignment="Center" Margin="5,0" >
@@ -189,6 +215,7 @@
                                                                 <TextBlock Text="{Binding TextDataCompressedSize}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
                                                                 <TextBlock Text="{Binding TextDataUncompressedSize}" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
                                                             </UniformGrid>
+                                                            <TextBlock Text="{Binding PreviewLine}" Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
@@ -199,11 +226,39 @@
                                 <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" 
         Header="General Text Entries" Background="Black">
                                     <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
-
+                                        <DockPanel>
+                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                                                <TextBlock Text="Nº" Foreground="White" HorizontalAlignment="Center" Margin="8,0,24,0"/>
+                                                <TextBlock Text="Index" Foreground="White" HorizontalAlignment="Center" Margin="10,0"/>
+                                                <TextBlock Text="Offset" Foreground="White" HorizontalAlignment="Center" Margin="22,0"/>
+                                                <TextBlock Text="C. Size" Foreground="White" HorizontalAlignment="Center" Margin="12,0"/>
+                                                <TextBlock Text="U. Size" Foreground="White" HorizontalAlignment="Center" Margin="13,0"/>
+                                            </StackPanel>
+                                            <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding MenuTexts}" SelectionChanged="MenuTexts_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Grid.Column="4" >
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding Index}" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="26"/>
+                                                            <UniformGrid Columns="4" Rows="1"  Grid.Column="1" HorizontalAlignment="Center" Margin="5,0" >
+                                                                <TextBlock Text="{Binding TextDataIndex}" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataOffset}" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataCompressedSize}" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                                <TextBlock Text="{Binding TextDataUncompressedSize}" HorizontalAlignment="Center" Foreground="{StaticResource TextData}"/>
+                                                            </UniformGrid>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </DockPanel>
                                     </Border>
                                 </TabItem>
                             </TabControl>
-                            <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="220,0,0,0">
+
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="220,0,0,0" VerticalAlignment="Top">
                                 <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Export...  " Margin="2" Click="ExportMenu_Click">
                                     <Button.ContextMenu>
                                         <ContextMenu x:Name="ExportMenu">
@@ -227,6 +282,7 @@
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch"
                                   Background="{StaticResource DarkBlueBrush}"
+                                          
                                   ShowsPreview="True"/>
                             <Line Y1="0" X2="1" X1="1" Y2="20" StrokeDashArray="0.25 2" StrokeDashCap="Round" IsHitTestVisible="False" Stroke=" Gray" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
 
@@ -235,15 +291,14 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Preview Text:" Margin="5"/>
-                                <TextBlock Text="Bind selection!!" HorizontalAlignment="Right" Margin="5"/>
+                                <TextBlock Text="{Binding PreviewIndex, StringFormat=Previewing {0}}" Margin="5"/>
                                 <Border Name="BorderPreview" Grid.Row="1" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2" Margin="2">
-                                    <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding TextLinesPreview}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox Background="Black" BorderThickness="0"
+                                             ItemsSource="{Binding TextLinesPreview}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             SelectionChanged="Preview_SelectionChanged">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding .}" TextWrapping="WrapWithOverflow" MaxWidth="{Binding DataContext.TextWidth, RelativeSource={RelativeSource AncestorType=ListBox}}" MinHeight="50"/>
-                                                </StackPanel>
+                                                <UC:DialoguePreview DisplayText="{Binding .}"/>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
@@ -253,19 +308,33 @@
 
                     </Border>
                 </TabItem>
-                <TabItem  Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Header="Edit Entry" Background="Black" BorderThickness="0">
+                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Background="Black" BorderThickness="0">
+                    <TabItem.Header>
+                        <TextBlock Text="Edit Entry" FontSize="14"/>
+                    </TabItem.Header>
                     <ScrollBar/>
                 </TabItem>
             </TabControl>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="130,2,0,0">
+            <Grid x:Name="grid" VerticalAlignment="Top" Margin="150,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <TextBlock Text="Langauage:" Margin="5,0" VerticalAlignment="Center"/>
-                <ComboBox SelectedIndex="{Binding CurrentLanguage}" ItemContainerStyle="{DynamicResource ComboBoxItemContainer}" ItemsSource="{Binding linkdata.Languages}" MinWidth="100"/>
-                <TextBlock Margin="5,0" Text="{Binding linkdata.LINKDATAPath}" VerticalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Background="Black" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4">
-                <TextBlock Text="Version:" Margin="4,0"/>
-                <TextBlock Text="{Binding linkdata.LINKDATAVersion}" Foreground="Gold" HorizontalAlignment="Right" Margin="4,0"/>
-            </StackPanel>
+                <ComboBox SelectedIndex="{Binding CurrentLanguage}" Grid.Column="1" VerticalContentAlignment="Center" ItemContainerStyle="{DynamicResource ComboBoxItemContainer}" ItemsSource="{Binding linkdata.Languages}" MinWidth="100"/>
+                <TextBox Text="{Binding PName,UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Margin="0,0,4,0"/>
+                <TextBlock Text="{Binding PNameDef, FallbackValue=PName}" IsHitTestVisible="False" Visibility="{Binding NameValid}" Grid.Column="2" Margin="8,6" Foreground="Gray" />
+                <ToggleButton Content="♂" Width="{Binding ActualHeight, ElementName=grid, Mode=OneWay}" IsChecked="{Binding Male}" Grid.Column="3" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Margin="2,0" FontSize="14"/>
+                <ToggleButton Content="♀" Width="{Binding ActualHeight, ElementName=grid, Mode=OneWay}" IsChecked="{Binding Female}" Grid.Column="4" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Margin="2,0" FontSize="14"/>
+                <StackPanel Background="Black" Orientation="Horizontal"  Grid.Column="5" Margin="0,4">
+                    <TextBlock Text="Version:" Margin="4,0"/>
+                    <TextBlock Text="{Binding linkdata.LINKDATAVersion}" Foreground="Gold" HorizontalAlignment="Right" Margin="4,0"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

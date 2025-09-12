@@ -27,36 +27,47 @@ namespace DQB2TextEditor.Linkdata
 
         private void ExtractData()
         {
-            byte[] uncompressData = uncompressedData;
-
-            string a = "";
-            foreach (byte b in uncompressData) a += b.ToString("X2") + " ";
-            Console.WriteLine($"Reading {a}");
-
-            int offsetPointer = BitConverter.ToInt32(uncompressData, 0x00) * 4 + 0x40;
-            int linePointer = BitConverter.ToInt32(uncompressData, (int)offsetPointer) + offsetPointer;
-
-            ushort lineCount = (ushort)((linePointer - offsetPointer) / 4);
-            _lines = new string[lineCount];
-            int[] pointersLocal = new int[lineCount];
-            for (int i = 0; i < lineCount; i++)
+            try
             {
-                pointersLocal[i] = BitConverter.ToInt32(uncompressData, offsetPointer + i * 4);
+                byte[] uncompressData = uncompressedData;
+
+                uint offsetPointer = (uint)(BitConverter.ToUInt16(uncompressData, 0x00) * 4 + 0x40);
+                uint linePointer = BitConverter.ToUInt16(uncompressData, (int)offsetPointer) + offsetPointer;
+
+                uint lineCount = (uint)((linePointer - offsetPointer) / 4);
+                _lines = new string[lineCount];
+                uint[] pointersLocal = new uint[lineCount];
+                for (int i = 0; i < lineCount; i++)
+                {
+                    pointersLocal[i] = BitConverter.ToUInt16(uncompressData, (int)(offsetPointer + i * 4));
+                }
+                for (int i = 0; i < lineCount; i++)
+                {
+                    uint pointer = (uint)(pointersLocal[i] + offsetPointer + i * 4);
+                    uint size = (uint)(uncompressData.Length - pointer);
+                    if (size < 0) break;
+
+                    if (i < lineCount - 1)
+                    {
+                        uint sizeCheck = pointersLocal[i + 1] - pointersLocal[i] + 4;
+                        if (sizeCheck < size) size = sizeCheck;
+                    }
+
+                    _lines[i] = System.Text.Encoding.UTF8.GetString(uncompressData, (int)pointer, (int)size);
+                }
             }
-            for (int i = 0; i < lineCount - 1; i++)
+            catch (Exception ex)
             {
-                int size = pointersLocal[i + 1] - pointersLocal[i] + 4;
-                int pointer = pointersLocal[i] + offsetPointer + i * 4;
-                _lines[i] = System.Text.Encoding.UTF8.GetString(uncompressData, pointer, size);
+                Console.WriteLine($"Error extracting text data: {ex.Message}");
+                _lines = new string[2];
+                _lines[0] = "<$cdef(68)>Error extracting text data.</color>";
+                _lines[1] = ex.Message.ToString();
             }
-            int pointerFinal = pointersLocal[lineCount-1] + offsetPointer + (lineCount - 1) * 4;
-            int sizeFinal = uncompressData.Length - pointerFinal;
-            _lines[lineCount - 1] = System.Text.Encoding.UTF8.GetString(uncompressData, pointerFinal, sizeFinal);
+            finally
+            {
+                initialized = true;
+            }
+
         }
-
-
-
-
-
     }
 }
