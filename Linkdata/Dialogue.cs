@@ -21,9 +21,5 @@ namespace DQB2TextEditor.Linkdata
         {
             _FlowDataFile = flowDataFile;
         }
-
-
-
-
     }
 }

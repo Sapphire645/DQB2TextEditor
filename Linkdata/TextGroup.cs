@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DQB2TextEditor.Linkdata
 {
-    public abstract class TextGroup : INotifyPropertyChanged
+    public class TextGroup : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -23,6 +23,7 @@ namespace DQB2TextEditor.Linkdata
         public UInt64 TextDataUncompressedSize => _TextDataFiles[ViewModel._currentLanguage].UncompressedSize;
         public UInt64 TextDataCompressedSize => _TextDataFiles[ViewModel._currentLanguage].CompressedSize;
 
+        public string PreviewLine { get; set; } = "";
         protected LINKDATAEntry TextDataFile => _TextDataFiles[ViewModel._currentLanguage];
 
         private ushort _index;

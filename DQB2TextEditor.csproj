@@ -8,6 +8,8 @@
     <Subsystem>console</Subsystem>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="info\colorcodes.txt" />
+    <None Remove="info\DQB2_2.ttf" />
     <None Remove="Info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
     <None Remove="Info\versions\Steam1.7.2_1.7.3d.txt" />
     <None Remove="Info\versions\Switch-Demo-EU-1.0-JumboDemo-EU-1.1.txt" />
@@ -29,5 +31,9 @@
     <Content Include="Info\versions\Switch-Release-EU-1.5.2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="info\colorcodes.txt" />
+    <Resource Include="info\DQB2_2.ttf" />
   </ItemGroup>
 </Project>

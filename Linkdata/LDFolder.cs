@@ -28,41 +28,53 @@ namespace DQB2TextEditor.Linkdata
             {
                 if (!(_Files != null && _Files.TryGetTarget(out LDFile[] list)))
                 {
-                    byte[] bin = ViewModel.linkdata.GetEntryBytes(Entry);
-
-                    if (_Files == null)
+                    try
                     {
-                        SplitSize = BitConverter.ToUInt32(bin, 0);
-                        FileCount = BitConverter.ToUInt32(bin, 4);
-                        UncompressedSize = BitConverter.ToUInt32(bin, 8);
-                    }
-                    list = new LDFile[FileCount];
+                        byte[] bin = ViewModel.linkdata.GetEntryBytes(Entry);
 
-                    UInt32 offset = 0x0C + FileCount * 4;
-                    for (int count = 0; count < FileCount; count++)
-                    {
-                        if (offset % 0x80 != 0) offset = (offset / 0x80 + 1) * 0x80;
-                        UInt32 size = BitConverter.ToUInt32(bin, 0x0C + count * 4);
-                        byte[] binary = new byte[size];
-
-                        Array.Copy(bin, offset + 4, binary, 0, size);
-                        LDFile file = null;
-                        switch (Type)
+                        if (_Files == null)
                         {
-                            case FolderType.TextData:
-                                file = new LDFile_TextData(binary);
-                                break;
-                            case FolderType.FlowData:
-                                file = new LDFile(binary, false);
-                                break;
-                            case FolderType.Unknown:
-                                file = new LDFile(binary, Entry.IsCompressed);
-                                break;
+                            SplitSize = BitConverter.ToUInt32(bin, 0);
+                            FileCount = BitConverter.ToUInt32(bin, 4);
+                            UncompressedSize = BitConverter.ToUInt32(bin, 8);
                         }
-                        
-                        list[count] = file;
-                        offset += size;
+                        list = new LDFile[FileCount];
+
+                        UInt32 offset = 0x0C + FileCount * 4;
+                        for (int count = 0; count < FileCount; count++)
+                        {
+                            if (offset % 0x80 != 0) offset = (offset / 0x80 + 1) * 0x80;
+                            UInt32 size = BitConverter.ToUInt32(bin, 0x0C + count * 4);
+                            byte[] binary = new Byte[size];
+
+                            if(bin.Length < offset + 4 + size)
+                            {
+                                size = (UInt32)( bin.Length - offset-4); //Crashes sometimes, not sure why....
+                            }
+                            Array.Copy(bin, offset + 4, binary, 0, size);
+                            LDFile file = null;
+                            switch (Type)
+                            {
+                                case FolderType.TextData:
+                                    file = new LDFile_TextData(binary);
+                                    break;
+                                case FolderType.FlowData:
+                                    file = new LDFile(binary, false);
+                                    break;
+                                case FolderType.Unknown:
+                                    file = new LDFile(binary, Entry.IsCompressed);
+                                    break;
+                            }
+
+                            list[count] = file;
+                            offset += size;
+                            return list;
+                        }
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error extracting files {Entry.Index}: {ex.Message}");
                     }
+                    return new LDFile[1];
                 }
                 return list;
             }

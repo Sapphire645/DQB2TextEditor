@@ -16,14 +16,18 @@ using System.Windows.Shapes;
 namespace DQB2TextEditor.Windows
 {
     /// <summary>
-    /// Interaction logic for TextEditor.xaml
+    /// MISSING
+    /// - EXPORT AND IMPORT
+    /// - READ FLOWDATA
+    /// - NORMAL TEXT 
+    /// SAVING INTO THE LINKDATA.
     /// </summary>
     public partial class TextEditorWindow : Window
     {
         private ViewModel viewModel;
         public TextEditorWindow(SLViewModel SLVM)
         {
-            viewModel = new ViewModel(SLVM,this);
+            viewModel = new ViewModel(SLVM, this);
             DataContext = viewModel;
             InitializeComponent();
 
@@ -32,6 +36,10 @@ namespace DQB2TextEditor.Windows
         private void Dialogues_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             viewModel.SelectedTextGroup = ((ListBox)sender).SelectedItem as Dialogue;
+        }
+        private void MenuTexts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            viewModel.SelectedTextGroup = ((ListBox)sender).SelectedItem as TextGroup;
         }
 
         private void Dialogues_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -50,26 +58,22 @@ namespace DQB2TextEditor.Windows
             button.ContextMenu.PlacementTarget = button;
             button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             button.ContextMenu.IsOpen = true;
-    }
+        }
 
         private void Preview_Click(object sender, RoutedEventArgs e)
         {
             viewModel.UpdatePreviewText();
         }
 
-        private void SizeUpdate(object sender, SizeChangedEventArgs e)
+        private void Search_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.UpdateWidth();
+            viewModel.TextFilter();
         }
 
-        private void Edit_Selected_Click(object sender, RoutedEventArgs e)
+        private void SizeChange(object sender, SizeChangedEventArgs e)
         {
-            viewModel.SelectedToEdit();
-        }
+            viewModel.SizeChange();
 
-        private void Save_Edited_Click(object sender, RoutedEventArgs e)
-        {
-            viewModel.EditToSelected();
         }
     }
 }

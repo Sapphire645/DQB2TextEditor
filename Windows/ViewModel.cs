@@ -1,14 +1,19 @@
 ﻿using DQB2TextEditor.Linkdata;
+using DQB2TextEditor.Windows.UserControlFolder;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 
 namespace DQB2TextEditor.Windows
@@ -36,25 +41,29 @@ namespace DQB2TextEditor.Windows
                     OnPropertyChanged(nameof(CurrentLanguage));
                     OnPropertyChanged(nameof(SelectedTextGroup));
                     OnPropertyChanged(nameof(_currentLanguage));
+                    OnPropertyChanged(nameof(PreviewFontFamily));
                 }
             }
         }
 
         public static byte _currentLanguage = 0;
         public bool selected => _selectedTextGroup != null;
-        public bool editing => _editingTextGroup != null;
+        public Visibility DialogueLoaded => _selectedTextGroup is Dialogue ? Visibility.Visible : Visibility.Collapsed;
 
-        public Visibility selectedVisibility => _selectedTextGroup != null ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility editingVisibility => _editingTextGroup != null ? Visibility.Visible : Visibility.Collapsed;
-        public ObservableCollection<Dialogue> Dialogues => linkdata.Dialogues;
-        public ObservableCollection<String> TextLinesPreview { get; private set; } = new ObservableCollection<string>() { "aa", "bb" };
+
+        public ObservableCollection<Dialogue> Dialogues { get; private set; }
+        public ObservableCollection<TextGroup> MenuTexts => linkdata.MenuTexts;
+        public ObservableCollection<String> TextLinesPreview { get; private set; } = new ObservableCollection<string>();
 
         private TextGroup _selectedTextGroup;
 
-        private TextGroup _editingTextGroup;
-
         private TextEditorWindow window;
-        public int TextWidth => window == null ? 0 : (int)window.BorderPreview.ActualWidth - 34;
+      
+        public int PreviewIndex { get; private set; }
+        private bool _dialogue;
+        public int DialogueHeight => _dialogue ? 63 : 0;
+        public double EntryWidth => window.listBox.ActualWidth - 26;
+        
         public TextGroup SelectedTextGroup
         {
             get { return _selectedTextGroup; }
@@ -64,35 +73,65 @@ namespace DQB2TextEditor.Windows
                 {
                     _selectedTextGroup = value;
                     OnPropertyChanged(nameof(SelectedTextGroup));
-                    OnPropertyChanged(nameof(selectedVisibility));
                     OnPropertyChanged(nameof(Selection));
                     OnPropertyChanged(nameof(selected));
-                }
-            }
-        }
-        public TextGroup EditingTextGroup
-        {
-            get { return _editingTextGroup; }
-            set
-            {
-                if (_editingTextGroup != value)
-                {
-                    _editingTextGroup = value;
-                    OnPropertyChanged(nameof(EditingTextGroup));
-                    OnPropertyChanged(nameof(EditedSelection));
-                    OnPropertyChanged(nameof(editingVisibility));
-                    OnPropertyChanged(nameof(editing));
+                    OnPropertyChanged(nameof(DialogueLoaded));
                 }
             }
         }
         public string Selection => SelectedTextGroup is Dialogue ? "Dialogue" : "Text";
-        public string EditedSelection => EditingTextGroup is Dialogue ? "Dialogue" : "Text";
+
+
+        private FontFamily PreviewFontFamilyEU = new FontFamily(new Uri("pack://application:,,,/"),"./Info/#DQB2_2");
+        private FontFamily PreviewFontFamilyAS = SystemFonts.MessageFontFamily;
+
+        public FontFamily PreviewFontFamily => PreviewFontFamilyEU;
+        public int PreviewFontSize => PreviewFontFamily == PreviewFontFamilyEU ? 14 : 12;
+
+
+        private String playerName;
+        private bool gender = false;
+        public String PName { get => playerName; set { playerName = value; 
+                OnPropertyChanged(nameof(PName));
+                OnPropertyChanged(nameof(NameValid));
+            } }
+        public String PNameDef => gender ? "Creatrix" : "Bildrick";
+
+        public Visibility NameValid => String.IsNullOrEmpty(playerName) ? Visibility.Visible : Visibility.Collapsed;
+
+        public static string PlayerName => String.IsNullOrEmpty(me.PName) ? me.PNameDef : me.PName;
+        public static bool Gender => me.gender;
+        public bool Male
+        {
+            get => !gender;
+            set
+            {
+                gender = !value;
+                OnPropertyChanged(nameof(PNameDef));
+                OnPropertyChanged(nameof(Male));
+                OnPropertyChanged(nameof(Female));
+            }
+        }
+        public bool Female
+        {
+            get => gender;
+            set
+            {
+                gender = value;
+                OnPropertyChanged(nameof(PNameDef));
+                OnPropertyChanged(nameof(Male));
+                OnPropertyChanged(nameof(Female));
+            }
+        }
+
+        public String FilterText { get; set; } = String.Empty;
 
         public ViewModel(SLViewModel SLVM, TextEditorWindow window)
         {
             me = this;
             this.window = window;
             linkdata = SLVM.CreateLINKDATA();
+            Dialogues = linkdata.Dialogues;
         }
 
 
@@ -104,20 +143,90 @@ namespace DQB2TextEditor.Windows
                 if (!String.IsNullOrEmpty(line) && !line.Equals("\0"))
                     TextLinesPreview.Add(line);
             }
+            PreviewIndex = SelectedTextGroup.TextDataIndex;
+            OnPropertyChanged(nameof(PreviewIndex));
+            _dialogue = SelectedTextGroup is Dialogue;
+            OnPropertyChanged(nameof(DialogueHeight));
         }
 
-        public void UpdateWidth()
+        public async void TextFilter()
         {
-            OnPropertyChanged(nameof(TextWidth));
+            var newDialogues = new ObservableCollection<Dialogue>();
+            var progressWindow = new ProgressWindow("Searching for string...", "Note: Things like names, player pronouns or other generated text wont filter properly.", (uint)linkdata.Dialogues.Count);
+            progressWindow.Show();
+            var filterText = FilterText?.Trim().ToLower() ?? String.Empty;
+
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+                int i = 0;
+                foreach (var dialogue in linkdata.Dialogues)
+                {
+                    var mad = dialogue.GetTextLinesPreview().ToList();
+                    foreach (var line in mad)
+                    {
+                        var newline = line?.Trim().ToLower() ?? String.Empty;
+                        if (!String.IsNullOrEmpty(newline) && !newline.Equals("\0"))
+                        {
+                            if (newline.Contains(filterText) || Regex.Replace(newline, @"<(.*?)>", "").Contains(filterText))
+                            {
+                                newDialogues.Add(dialogue);
+                                dialogue.PreviewLine = TrimAroundPhrase(line, filterText);
+                                break;
+                            }
+                        }
+                    }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+            Dialogues = newDialogues;
+            OnPropertyChanged(nameof(Dialogues));
         }
 
-        public void SelectedToEdit()
+        public void SizeChange()
         {
-            EditingTextGroup = SelectedTextGroup;
+            OnPropertyChanged(nameof(EntryWidth));
         }
-        public void EditToSelected()
-        {
 
+        string TrimAroundPhrase(string text, string phrase)
+        {
+            int wordsAround = 3;
+            var words = text.Split(' ');
+            var phraseWords = phrase.Split(' ');
+
+            for (int i = 0; i <= words.Length - phraseWords.Length; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < phraseWords.Length; j++)
+                {
+                    if (!words[i + j].Contains(phraseWords[j], StringComparison.OrdinalIgnoreCase))
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match)
+                {
+                    int start = Math.Max(0, i - wordsAround);
+                    int end = Math.Min(words.Length - 1, i + phraseWords.Length - 1 + wordsAround);
+                    var trimmed = words.Skip(start).Take(end - start + 1);
+                    string result = string.Join(" ", trimmed);
+
+                    if (start > 0) result = "… " + result;
+                    if (end < words.Length - 1) result += " …";
+                    return result;
+                }
+            }
+
+            return ""; // Phrase not found
         }
     }
 }
