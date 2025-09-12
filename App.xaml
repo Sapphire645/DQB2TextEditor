@@ -820,11 +820,12 @@
         </ControlTemplate>
         
         <Style TargetType="Button">
+            <Setter Property="Background" Value="#242435"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="Border" CornerRadius="5" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Background="#242435" Padding="2">
-                            <TextBlock Name="text" Text="{TemplateBinding Content}" Foreground="White" HorizontalAlignment="Center"/>
+                        <Border Name="Border" CornerRadius="5" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Background="{TemplateBinding Background}" Padding="2">
+                            <TextBlock Name="text" Text="{TemplateBinding Content}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsEnabled" Value="False">

@@ -61,5 +61,15 @@ namespace DQB2TextEditor.Windows
         {
             viewModel.UpdateWidth();
         }
+
+        private void Edit_Selected_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.SelectedToEdit();
+        }
+
+        private void Save_Edited_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.EditToSelected();
+        }
     }
 }

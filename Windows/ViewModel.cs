@@ -110,5 +110,14 @@ namespace DQB2TextEditor.Windows
         {
             OnPropertyChanged(nameof(TextWidth));
         }
+
+        public void SelectedToEdit()
+        {
+            EditingTextGroup = SelectedTextGroup;
+        }
+        public void EditToSelected()
+        {
+
+        }
     }
 }
