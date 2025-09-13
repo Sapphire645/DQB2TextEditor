@@ -18,7 +18,7 @@ namespace DQB2TextEditor.Windows.Panel
     /// <summary>
     /// Interaction logic for DialogueEntry.xaml
     /// </summary>
-    public partial class DialogueEntry
+    public partial class DialogueEntry : UserControl
     {
         public DialogueEntry()
         {

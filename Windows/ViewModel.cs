@@ -1,5 +1,6 @@
 ﻿using DQB2TextEditor.Linkdata;
 using DQB2TextEditor.Proccessing;
+using DQB2TextEditor.Windows.Panel;
 using DQB2TextEditor.Windows.UserControlFolder;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace DQB2TextEditor.Windows
                     OnPropertyChanged(nameof(SelectedTextGroup));
                     OnPropertyChanged(nameof(_currentLanguage));
                     OnPropertyChanged(nameof(PreviewFontFamily));
+                    UpdateEditText();
                 }
             }
         }
@@ -57,6 +59,9 @@ namespace DQB2TextEditor.Windows
         public ObservableCollection<Dialogue> Dialogues { get; private set; }
         public ObservableCollection<TextGroup> MenuTexts => linkdata.MenuTexts;
         public ObservableCollection<String> TextLinesPreview { get; private set; } = new ObservableCollection<string>();
+
+        //For text editing.
+        public ObservableCollection<String> TextLinesEdit { get; private set; } = new ObservableCollection<string>();
 
         private TextGroup _selectedTextGroup;
 
@@ -259,10 +264,37 @@ namespace DQB2TextEditor.Windows
         public void SelectedToEdit()
         {
             EditingTextGroup = SelectedTextGroup;
+            if (!(EditingTextGroup is Dialogue)) UpdateEditText();
         }
         public void EditToSelected()
         {
 
+        }
+
+        public void UpdateEditText()
+        {
+            TextLinesEdit.Clear();
+            if(EditingTextGroup == null) return;
+            var mad = EditingTextGroup.GetTextLinesPreview().ToList();
+            foreach (var line in mad)
+            {
+                TextLinesEdit.Add(line);
+            }
+            //PreviewIndex = SelectedTextGroup.TextDataIndex;
+            //OnPropertyChanged(nameof(PreviewIndex));
+            //_dialogue = SelectedTextGroup is Dialogue;
+            //OnPropertyChanged(nameof(DialogueHeight));
+        }
+
+        //EDITING TEXT LINE
+        private String _editingLine;
+        public String EditingLine
+        {
+            get => _editingLine; set
+            {
+                _editingLine = value;
+                OnPropertyChanged(nameof(EditingLine));
+            }
         }
     }
 }

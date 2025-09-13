@@ -24,7 +24,7 @@ namespace DQB2TextEditor.Linkdata
             //Ask the file for the line.
             if (Files[0] == null) return new string[0];
             return ((LDFile_TextData)data[0]).Lines;
-
         }
+        
     }
 }

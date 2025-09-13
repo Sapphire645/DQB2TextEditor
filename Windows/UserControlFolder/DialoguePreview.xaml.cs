@@ -41,7 +41,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
 
         private void RunCheck(object sender, RoutedEventArgs e)
         {
-            if (DisplayText.Contains("<off>")) //Turn off bg
+            if (DisplayText!= null && DisplayText.Contains("<off>")) //Turn off bg
             {
                 TextBoxBG.Background = Brushes.Transparent;
                 TextBoxBG.BorderBrush = Brushes.Transparent;
@@ -171,7 +171,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     {
                         RelativeSource = new RelativeSource
                         {
-                            AncestorType = typeof(ListBox)
+                            AncestorType = typeof(Window)
                         }
                     };
                     textBlockTop.SetBinding(TextBox.FontFamilyProperty, binding);
@@ -179,7 +179,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     {
                         RelativeSource = new RelativeSource
                         {
-                            AncestorType = typeof(ListBox)
+                            AncestorType = typeof(Window)
                         }
                     };
                     textBlockTop.SetBinding(TextBox.FontSizeProperty, binding);
@@ -191,7 +191,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     {
                         RelativeSource = new RelativeSource
                         {
-                            AncestorType = typeof(ListBox)
+                            AncestorType = typeof(Window)
                         }
                     };
                     textBlockTop.SetBinding(TextBox.TextProperty, binding);
@@ -199,7 +199,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     {
                         RelativeSource = new RelativeSource
                         {
-                            AncestorType = typeof(ListBox)
+                            AncestorType = typeof(Window)
                         }
                     };
                     textBlockBottom.SetBinding(TextBox.FontFamilyProperty, binding);
@@ -207,7 +207,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     {
                         RelativeSource = new RelativeSource
                         {
-                            AncestorType = typeof(ListBox)
+                            AncestorType = typeof(Window)
                         }
                     };
                     textBlockBottom.SetBinding(TextBox.FontSizeProperty, binding);

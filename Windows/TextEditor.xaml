@@ -316,7 +316,10 @@
                     <TabItem.Header>
                         <TextBlock Text="Edit Entry" FontSize="14"/>
                     </TabItem.Header>
-                    <panel:DialogueEntry/>
+                    <Grid>
+                        <panel:DialogueEntry Visibility="Collapsed"/>
+                        <panel:TextEntry/>
+                    </Grid>
                 </TabItem>
             </TabControl>
             <Grid x:Name="grid" VerticalAlignment="Top" Margin="150,0,0,0">

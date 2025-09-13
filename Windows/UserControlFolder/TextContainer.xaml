@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="DQB2TextEditor.Windows.UserControlFolder.TextContainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DQB2TextEditor.Windows.UserControlFolder"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Viewbox>
+        <StackPanel>
+        <Border Name="TextBoxBG" IsHitTestVisible="False" BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="4">
+            <TextBlock
+            local:TextBlockExtensions.HighlightedText="{Binding .}"
+            Padding="{Binding DataContext.PreviewPadding, RelativeSource={RelativeSource AncestorType=ListBox}}"
+               Width="286" 
+               MinHeight="{Binding DataContext.DialogueHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"
+               LineHeight="{Binding DataContext.PreviewLineSpace, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                LineStackingStrategy="BlockLineHeight"
+               FontSize="{Binding DataContext.PreviewFontSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
+               FontFamily="{Binding DataContext.PreviewFontFamily, RelativeSource={RelativeSource AncestorType=ListBox}}"
+               TextWrapping="WrapWithOverflow">
+            </TextBlock>
+        </Border>
+            <Button Name="AddButtonName" 
+                    HorizontalAlignment="Center" 
+                    Click="Button_Click" Visibility = "Collapsed"
+                    FontSize="6" Content=" + " ToolTip="Actually, I know I'm giving you the choice but Do Not. Not allowed.">
+            </Button>
+        </StackPanel>
+    </Viewbox>
+</UserControl>
