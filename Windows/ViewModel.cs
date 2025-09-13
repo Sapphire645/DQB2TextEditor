@@ -1,4 +1,5 @@
 ﻿using DQB2TextEditor.Linkdata;
+using DQB2TextEditor.Proccessing;
 using DQB2TextEditor.Windows.UserControlFolder;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace DQB2TextEditor.Windows
 
         public static LINKDATA linkdata { get; private set; }
 
+        public bool Asia => linkdata.AsianLanguages.Contains(_currentLanguage); //Format of the text preview.
         public byte CurrentLanguage
         {
             get { return _currentLanguage; }
@@ -38,6 +40,7 @@ namespace DQB2TextEditor.Windows
                 if (_currentLanguage != value)
                 {
                     _currentLanguage = value;
+                    OnPropertyChanged(nameof(PNameDef));
                     OnPropertyChanged(nameof(CurrentLanguage));
                     OnPropertyChanged(nameof(SelectedTextGroup));
                     OnPropertyChanged(nameof(_currentLanguage));
@@ -107,10 +110,11 @@ namespace DQB2TextEditor.Windows
 
         private FontFamily PreviewFontFamilyEU = new FontFamily(new Uri("pack://application:,,,/"),"./Info/#DQB2_2");
         private FontFamily PreviewFontFamilyAS = SystemFonts.MessageFontFamily;
-
-        public FontFamily PreviewFontFamily => PreviewFontFamilyEU;
+        public FontFamily PreviewFontFamily => Asia ? PreviewFontFamilyAS : PreviewFontFamilyEU;
         public int PreviewFontSize => PreviewFontFamily == PreviewFontFamilyEU ? 14 : 12;
-
+        public int PreviewLineSpace => PreviewFontFamily == PreviewFontFamilyEU ? 13 : 18;
+        public Thickness PreviewPadding => PreviewFontFamily == PreviewFontFamilyEU ? new Thickness(12, 7,12,7) : new Thickness(12, 2, 12, 2);
+        public int PreviewFontSizeFurigana => 5;
 
         private String playerName;
         private bool gender = false;
@@ -118,7 +122,7 @@ namespace DQB2TextEditor.Windows
                 OnPropertyChanged(nameof(PName));
                 OnPropertyChanged(nameof(NameValid));
             } }
-        public String PNameDef => gender ? "Creatrix" : "Bildrick";
+        public String PNameDef => gender ? (Asia ? "クリエ" : "Creatrix") : (Asia ? "ビルド" : "Bildrick");
 
         public Visibility NameValid => String.IsNullOrEmpty(playerName) ? Visibility.Visible : Visibility.Collapsed;
 

@@ -11,6 +11,7 @@ namespace DQB2TextEditor.InfoReading
     {
         public readonly String VersionName;
         public readonly String[] Languages;
+        public readonly byte[] AsianLanguage;
         public byte LanguageCount => (byte)Languages.Length;
 
         public readonly ushort DialogueCount;
@@ -32,6 +33,7 @@ namespace DQB2TextEditor.InfoReading
             String[] lines = System.IO.File.ReadAllLines(path);
             var Current = -1;
             List<String> Languages = new List<String>();
+            List<byte> AsianLanguages = new List<byte>();
             foreach (String line in lines)
             {
                 if (line[0] == '#') continue;
@@ -46,7 +48,13 @@ namespace DQB2TextEditor.InfoReading
                 switch (Current)
                 {
                     case 0:
-                        Languages.Add(line.Split('\t').Last());
+                        var split = line.Split('\t');
+                        if (split[1].StartsWith('*'))
+                        {
+                            split[1] = split[1].Replace("*", "");
+                            AsianLanguages.Add(byte.Parse(split[0]));
+                        }
+                        Languages.Add(split[1]);
                         break;
                     case 1:
                         var Values = line.Split('\t');
@@ -71,6 +79,7 @@ namespace DQB2TextEditor.InfoReading
                 }
             }
             this.Languages = Languages.ToArray();
+            this.AsianLanguage = AsianLanguages.ToArray();
         }
     }
 

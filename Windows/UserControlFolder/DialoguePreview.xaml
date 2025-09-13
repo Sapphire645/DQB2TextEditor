@@ -5,20 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DQB2TextEditor.Windows.UserControlFolder"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="RunCheck">
     <UserControl.Resources>
         <local:HighlightWordConverter x:Key="HighlightConverter"
                                   WordToHighlight="key"
                                   HighlightColor="Orange"/>
     </UserControl.Resources>
     <Viewbox>
-        <Border IsHitTestVisible="False" BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="4">
+        <Border Name="TextBoxBG" IsHitTestVisible="False" BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="4">
             <TextBlock
             local:TextBlockExtensions.HighlightedText="{Binding .}"
-            Padding="12,7"
+            Padding="{Binding DataContext.PreviewPadding, RelativeSource={RelativeSource AncestorType=ListBox}}"
                Width="286" 
                MinHeight="{Binding DataContext.DialogueHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"
-               LineHeight="13" LineStackingStrategy="BlockLineHeight"
+               LineHeight="{Binding DataContext.PreviewLineSpace, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                LineStackingStrategy="BlockLineHeight"
                FontSize="{Binding DataContext.PreviewFontSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                FontFamily="{Binding DataContext.PreviewFontFamily, RelativeSource={RelativeSource AncestorType=ListBox}}"
                TextWrapping="WrapWithOverflow">

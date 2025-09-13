@@ -1,6 +1,6 @@
 -SIZE	26504
 -LAN
-0	Japanese
+0	*Japanese
 -CUT
 c	10488-18388
 t	18388-26288

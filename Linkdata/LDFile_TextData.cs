@@ -20,7 +20,7 @@ namespace DQB2TextEditor.Linkdata
         }
 
         private string[] _lines = Array.Empty<string>();
-        public LDFile_TextData(byte[] data) : base(data, true)
+        public LDFile_TextData(byte[] data,UInt32 overflowmem) : base(data, true, overflowmem)
         {
 
         }
@@ -31,15 +31,23 @@ namespace DQB2TextEditor.Linkdata
             {
                 byte[] uncompressData = uncompressedData;
 
-                uint offsetPointer = (uint)(BitConverter.ToUInt16(uncompressData, 0x00) * 4 + 0x40);
-                uint linePointer = BitConverter.ToUInt16(uncompressData, (int)offsetPointer) + offsetPointer;
+                //Need to change how I apporach this.
+                //This number counts the amount of "sections". A section is a colection of lines.
+                //This matters in text, not dialogue.
+                uint sectionCount = BitConverter.ToUInt32(uncompressData, 0x00); 
+                //Now I know how many offsets there are.
+                uint offsetPointer = (uint)(sectionCount * 4 + 0x40);
+                //The line pointer, however, depends on the real number of lines.
+                //I can check by looking at where the pointer to the first line leads.
+                uint linePointer = BitConverter.ToUInt32(uncompressData, (int)offsetPointer) + offsetPointer;
 
                 uint lineCount = (uint)((linePointer - offsetPointer) / 4);
+                //if (lineCount == 0) lineCount = sectionCount; //backup
                 _lines = new string[lineCount];
                 uint[] pointersLocal = new uint[lineCount];
                 for (int i = 0; i < lineCount; i++)
                 {
-                    pointersLocal[i] = BitConverter.ToUInt16(uncompressData, (int)(offsetPointer + i * 4));
+                    pointersLocal[i] = BitConverter.ToUInt32(uncompressData, (int)(offsetPointer + i * 4));
                 }
                 for (int i = 0; i < lineCount; i++)
                 {

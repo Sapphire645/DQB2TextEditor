@@ -16,6 +16,7 @@ namespace DQB2TextEditor.Linkdata
         public String LINKDATAVersion => version.VersionName;
         public String LINKDATAPath => LinkdataPath;
         public String[] Languages => version.Languages;
+        public byte[] AsianLanguages => version.AsianLanguage;
         public ObservableCollection<Dialogue> Dialogues { get; private set; }
         public ObservableCollection<TextGroup> MenuTexts { get; private set; }
 

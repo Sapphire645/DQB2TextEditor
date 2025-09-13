@@ -56,13 +56,13 @@ namespace DQB2TextEditor.Linkdata
                             switch (Type)
                             {
                                 case FolderType.TextData:
-                                    file = new LDFile_TextData(binary);
+                                    file = new LDFile_TextData(binary, UncompressedSize);
                                     break;
                                 case FolderType.FlowData:
-                                    file = new LDFile(binary, false);
+                                    file = new LDFile(binary, false, UncompressedSize );
                                     break;
                                 case FolderType.Unknown:
-                                    file = new LDFile(binary, Entry.IsCompressed);
+                                    file = new LDFile(binary, Entry.IsCompressed, UncompressedSize);
                                     break;
                             }
 

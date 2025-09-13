@@ -34,7 +34,22 @@ namespace DQB2TextEditor.Windows.UserControlFolder
         public string DisplayText
         {
             get => (string)GetValue(DisplayTextProperty);
-            set => SetValue(DisplayTextProperty, value);
+            set {
+                SetValue(DisplayTextProperty, value); 
+            }
+        }
+
+        private void RunCheck(object sender, RoutedEventArgs e)
+        {
+            if (DisplayText.Contains("<off>")) //Turn off bg
+            {
+                TextBoxBG.Background = Brushes.Transparent;
+                TextBoxBG.BorderBrush = Brushes.Transparent;
+            }
+            else
+            {
+
+            }//Turn off bg
         }
     }
 
@@ -115,6 +130,8 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
             LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
 
+            //LineProcessed = Regex.Replace(LineProcessed, @"<(.*?):(.*?)>", match => match.Groups[1].Value);
+
             var ColourLines = Regex.Split(LineProcessed, $"(?={Regex.Escape(@"</color>") + "|" + Regex.Escape(@"<$cdef(")})");
 
             foreach (var ColourText in ColourLines)
@@ -122,17 +139,87 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                 if (ColourText.StartsWith("<$cdef(") && int.TryParse(Regex.Match(newText, @"<\$cdef\((\d+)\)>").Groups[1].Value, out var ColourNumber))
                 {
                     var Line = Regex.Replace(ColourText, @"<\$cdef\((.*?)\)>", "");
-                    textBlock.Inlines.Add(new Run(Line)
-                    {
-                        Foreground = InformationReading.ColourBrushes[ColourNumber],
-                    });
-                    //ProcessLineJp(Paragraph, Line, (System.Windows.Media.Brush)brushConverter.ConvertFromString(VersionInformation.ColourPreview[ColourNumber]));
+                    ProcessLineJp(textBlock, Line, InformationReading.ColourBrushes[ColourNumber]);
+                    //textBlock.Inlines.Add(new Run(Line)
+                    //{
+                    //    Foreground = InformationReading.ColourBrushes[ColourNumber],
+                    //});
                 }
                 else
                 {
                     var Line = ColourText.Replace("</color>", "");
-                    textBlock.Inlines.Add(new Run(Line));
+                    ProcessLineJp(textBlock, Line, InformationReading.ColourBrushes[7]);
+                    //textBlock.Inlines.Add(new Run(Line));
+
                 }
+            }
+        }
+        private static void ProcessLineJp(TextBlock textBlock, string Line, System.Windows.Media.Brush BG)
+        {
+            var JPLines = Regex.Split(Line, @"(<[^>]+:[^>]+>)");
+            for (ushort i = 0; i < JPLines.Length; i++)
+            {
+                if (Regex.IsMatch(JPLines[i], @"<(.*?):(.*?)>"))
+                {
+                    var stringMatch = Regex.Match(JPLines[i], @"<(.*?):(.*?)>");
+
+                    var inlineUIContainer1 = new InlineUIContainer();
+                    var Grid = new Grid() { Height = 26};
+                    //Top Text
+                    var textBlockTop = new TextBlock { Text = stringMatch.Groups[2].Value, Foreground = BG, Background = System.Windows.Media.Brushes.Transparent, HorizontalAlignment = System.Windows.HorizontalAlignment.Center };
+                    var binding = new Binding("DataContext.PreviewFontFamily")
+                    {
+                        RelativeSource = new RelativeSource
+                        {
+                            AncestorType = typeof(ListBox)
+                        }
+                    };
+                    textBlockTop.SetBinding(TextBox.FontFamilyProperty, binding);
+                    binding = new Binding("DataContext.PreviewFontSizeFurigana")
+                    {
+                        RelativeSource = new RelativeSource
+                        {
+                            AncestorType = typeof(ListBox)
+                        }
+                    };
+                    textBlockTop.SetBinding(TextBox.FontSizeProperty, binding);
+                    Grid.Children.Add(textBlockTop);
+
+                    //Bottom text
+                    var textBlockBottom = new TextBlock { Text = stringMatch.Groups[1].Value, Foreground = BG, Background = System.Windows.Media.Brushes.Transparent, Margin = new Thickness(0, 11, 0, 0) };
+                    binding = new Binding("DataContext.DialogueHeight")
+                    {
+                        RelativeSource = new RelativeSource
+                        {
+                            AncestorType = typeof(ListBox)
+                        }
+                    };
+                    textBlockTop.SetBinding(TextBox.TextProperty, binding);
+                    binding = new Binding("DataContext.PreviewFontFamily")
+                    {
+                        RelativeSource = new RelativeSource
+                        {
+                            AncestorType = typeof(ListBox)
+                        }
+                    };
+                    textBlockBottom.SetBinding(TextBox.FontFamilyProperty, binding);
+                    binding = new Binding("DataContext.PreviewFontSize")
+                    {
+                        RelativeSource = new RelativeSource
+                        {
+                            AncestorType = typeof(ListBox)
+                        }
+                    };
+                    textBlockBottom.SetBinding(TextBox.FontSizeProperty, binding);
+                    Grid.Children.Add(textBlockBottom);
+
+                    inlineUIContainer1.Child = Grid;
+                    textBlock.Inlines.Add(inlineUIContainer1);
+                }
+                textBlock.Inlines.Add(new Run(Regex.Replace(JPLines[i], @"<(.*?):(.*?)>", ""))
+                {
+                    Foreground = BG
+                });
             }
         }
     }

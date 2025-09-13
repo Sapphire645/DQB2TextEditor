@@ -11,6 +11,7 @@ namespace DQB2TextEditor.Linkdata
     {
         private byte[] _data;
         private bool _isCompressed;
+        private UInt32 _uncompressedSize;
 
         private WeakReference<byte[]> _uncompressedData;
         protected byte[] uncompressedData
@@ -26,10 +27,11 @@ namespace DQB2TextEditor.Linkdata
                 return data;
             }
         }
-        public LDFile(byte[] data, bool isCompressed)
+        public LDFile(byte[] data, bool isCompressed, UInt32 uncompressedSize)
         {
             _data = data;
             _isCompressed = isCompressed;
+            _uncompressedSize = uncompressedSize;
         }
 
         private Byte[] Comp(Byte[] data)
@@ -49,16 +51,17 @@ namespace DQB2TextEditor.Linkdata
             return result;
         }
 
-        private Byte[] Decomp(Byte[] data)
+        private byte[] Decomp(byte[] data)
         {
-            Byte[] result = [];
+            byte[] result = [];
             using (var input = new MemoryStream(data))
             {
                 using (var zlib = new System.IO.Compression.ZLibStream(input, System.IO.Compression.CompressionMode.Decompress))
                 {
                     using (var output = new MemoryStream())
                     {
-                        zlib.CopyTo(output);
+                        zlib.CopyTo(output, (int)_uncompressedSize);
+                        zlib.Flush();
                         result = output.ToArray();
                     }
                 }

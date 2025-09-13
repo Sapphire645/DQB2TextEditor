@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DQB2TextEditor.Windows"
         xmlns:UC="clr-namespace:DQB2TextEditor.Windows.UserControlFolder"
+        xmlns:panel="clr-namespace:DQB2TextEditor.Windows.Panel"
         mc:Ignorable="d"
-        Title="DQB2 Text Editor V2" Height="450" Width="960" Background="Black" MinWidth="960" MinHeight="200">
+        Title="DQB2 Text Editor V2" Height="450" Width="960" Background="Black" MinWidth="960" MinHeight="200"
+        >
     <DockPanel Margin="2">
         <Grid DockPanel.Dock="Bottom">
             <Grid.RowDefinitions>
@@ -194,7 +196,8 @@
                                                     </Button.ToolTip>
                                                 </Button>
                                             </Grid>
-                                            <ListBox SizeChanged="SizeChange" Name="listBox" Background="Black" BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                            <ListBox SizeChanged="SizeChange" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                     Name="listBox" Background="Black" BorderThickness="0" ItemsSource="{Binding Dialogues}" SelectionChanged="Dialogues_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Grid.Column="4" MaxWidth="{Binding DataContext.EntryWidth, RelativeSource={RelativeSource AncestorType=ListBox}}">
@@ -234,7 +237,8 @@
                                                 <TextBlock Text="C. Size" Foreground="White" HorizontalAlignment="Center" Margin="12,0"/>
                                                 <TextBlock Text="U. Size" Foreground="White" HorizontalAlignment="Center" Margin="13,0"/>
                                             </StackPanel>
-                                            <ListBox Background="Black" BorderThickness="0" ItemsSource="{Binding MenuTexts}" SelectionChanged="MenuTexts_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
+                                            <ListBox Background="Black" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                     ItemsSource="{Binding MenuTexts}" SelectionChanged="MenuTexts_SelectionChanged" MouseDoubleClick="Dialogues_MouseDoubleClick">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Grid.Column="4" >
@@ -312,7 +316,7 @@
                     <TabItem.Header>
                         <TextBlock Text="Edit Entry" FontSize="14"/>
                     </TabItem.Header>
-                    <ScrollBar/>
+                    <panel:DialogueEntry/>
                 </TabItem>
             </TabControl>
             <Grid x:Name="grid" VerticalAlignment="Top" Margin="150,0,0,0">
