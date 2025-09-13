@@ -33,7 +33,7 @@ namespace DQB2TextEditor.Windows.Panel
         }
         private void Line_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (((ListBox)sender).SelectedItem == null) 
+            if (((ListBox)sender).SelectedItem == null)
                 (DataContext as ViewModel).EditingLine = null;
             else
                 (DataContext as ViewModel).EditingLine = ((ListBox)sender).SelectedItem.ToString();
@@ -75,7 +75,7 @@ namespace DQB2TextEditor.Windows.Panel
         }
         private void OnHoveredItemChanged(TextContainer newItem)
         {
-            if(_lastHoveredItem != null) _lastHoveredItem.removeAddButton();
+            if (_lastHoveredItem != null) _lastHoveredItem.removeAddButton();
             if (newItem != null) newItem.displayAddButton(this);
             _lastHoveredItem = newItem;
         }
@@ -86,6 +86,11 @@ namespace DQB2TextEditor.Windows.Panel
                 (DataContext as ViewModel).TextLinesEdit[LinesList.SelectedIndex] = (DataContext as ViewModel).EditingLine;
 
 
+        }
+
+        private void CopyLine(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(TextBlockExtensions.ProcessLine(DPrev.DisplayText));
         }
     }
 }

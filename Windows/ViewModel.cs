@@ -106,12 +106,17 @@ namespace DQB2TextEditor.Windows
                     OnPropertyChanged(nameof(EditedSelection));
                     OnPropertyChanged(nameof(editingVisibility));
                     OnPropertyChanged(nameof(editing));
+
+                    OnPropertyChanged(nameof(IsDialogue));
+                    OnPropertyChanged(nameof(IsText));
                 }
             }
         }
         public string Selection => SelectedTextGroup is Dialogue ? "Dialogue" : "Text";
         public string EditedSelection => EditingTextGroup is Dialogue ? "Dialogue" : "Text";
 
+        public Visibility IsDialogue => EditingTextGroup is Dialogue ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility IsText => EditingTextGroup is Dialogue ? Visibility.Collapsed : Visibility.Visible;
 
         private FontFamily PreviewFontFamilyEU = new FontFamily(new Uri("pack://application:,,,/"),"./Info/#DQB2_2");
         private FontFamily PreviewFontFamilyAS = SystemFonts.MessageFontFamily;
@@ -265,6 +270,8 @@ namespace DQB2TextEditor.Windows
         {
             EditingTextGroup = SelectedTextGroup;
             if (!(EditingTextGroup is Dialogue)) UpdateEditText();
+            IsEditing = true;
+            EditingLine = null;
         }
         public void EditToSelected()
         {
@@ -287,6 +294,39 @@ namespace DQB2TextEditor.Windows
         }
 
         //EDITING TEXT LINE
+        private bool _editing = false;
+        public bool IsBrowsing { 
+            get => !_editing; 
+            set
+            {
+                if (_editing == value)
+                {
+                    _editing = !value;
+                    OnPropertyChanged(nameof(IsBrowsing));
+                    OnPropertyChanged(nameof(IsEditing));
+                    OnPropertyChanged(nameof(IsBrowsingV));
+                    OnPropertyChanged(nameof(IsEditingV));
+                }
+            }
+        }
+        public bool IsEditing
+        {
+            get => _editing;
+            set
+            {
+                if (_editing != value)
+                {
+                    _editing = value;
+                    OnPropertyChanged(nameof(IsBrowsing));
+                    OnPropertyChanged(nameof(IsEditing));
+                    OnPropertyChanged(nameof(IsBrowsingV));
+                    OnPropertyChanged(nameof(IsEditingV));
+                }
+            }
+        }
+
+        public Visibility IsBrowsingV => !_editing ? Visibility.Visible : Visibility.Hidden;
+        public Visibility IsEditingV => _editing ? Visibility.Visible : Visibility.Hidden;
         private String _editingLine;
         public String EditingLine
         {

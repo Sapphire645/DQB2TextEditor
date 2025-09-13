@@ -105,13 +105,10 @@ namespace DQB2TextEditor.Windows.UserControlFolder
         public static void SetHighlightedText(TextBlock textBlock, string value)
             => textBlock.SetValue(HighlightedTextProperty, value);
 
-        private static void OnHighlightedTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not TextBlock textBlock || e.NewValue is not string newText)
-                return;
 
-            textBlock.Inlines.Clear();
-            var LineProcessed = newText.Replace("<6>", "‛");
+        private static string convert(string baseText)
+        {
+            var LineProcessed = baseText.Replace("<6>", "‛");
             LineProcessed = LineProcessed.Replace("<9>", "’");
             LineProcessed = LineProcessed.Replace("<66>", "“");
             LineProcessed = LineProcessed.Replace("<99>", "”");
@@ -129,7 +126,20 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = LineProcessed.Replace("<cap>", "");
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
             LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
+            return LineProcessed;
+        }
+        public static string ProcessLine(string baseText)
+        {
+            return convert(baseText);
+        }
+        private static void OnHighlightedTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not TextBlock textBlock || e.NewValue is not string newText)
+                return;
 
+            textBlock.Inlines.Clear();
+            var LineProcessed = convert(newText);
+            
             //LineProcessed = Regex.Replace(LineProcessed, @"<(.*?):(.*?)>", match => match.Groups[1].Value);
 
             var ColourLines = Regex.Split(LineProcessed, $"(?={Regex.Escape(@"</color>") + "|" + Regex.Escape(@"<$cdef(")})");

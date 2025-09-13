@@ -15,9 +15,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Border Background="{StaticResource DarkBlueBrush}" Margin="2,1,2,2" CornerRadius="5">
+            <Border Background="{StaticResource DarkBlueBrush}" Margin="2,1,2,2" CornerRadius="5" Visibility="{Binding IsBrowsingV}">
             </Border>
-            <Border Background="{StaticResource DarkBlueBrush}" Grid.Row="1" Margin="2,1,2,2" CornerRadius="5">
+            <Border Background="{StaticResource DarkBlueBrush}" Grid.Row="1" Margin="2,1,2,2" CornerRadius="5" Visibility="{Binding IsEditingV}">
             </Border>
             <Grid Margin="0,7" Grid.RowSpan="2">
                 <Grid.ColumnDefinitions>
@@ -148,7 +148,7 @@
 
 
             <TabControl Background="Black" BorderThickness="0" Padding="0" Margin="2,5,2,1">
-                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}"  Background="Black">
+                <TabItem IsSelected="{Binding IsBrowsing}" Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}"  Background="Black">
                     <TabItem.Header>
                         <TextBlock Text="Entry List" FontSize="14"/>
                     </TabItem.Header>
@@ -312,14 +312,16 @@
 
                     </Border>
                 </TabItem>
-                <TabItem Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Background="Black" BorderThickness="0">
+                <TabItem IsSelected="{Binding IsEditing}" Template="{DynamicResource TabItem}" BorderBrush="{StaticResource DarkBlueBrush}" Background="Black" BorderThickness="0">
                     <TabItem.Header>
                         <TextBlock Text="Edit Entry" FontSize="14"/>
                     </TabItem.Header>
-                    <Grid>
-                        <panel:DialogueEntry Visibility="Collapsed"/>
-                        <panel:TextEntry/>
-                    </Grid>
+                    <Border BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2">
+                        <Grid>
+                            <panel:DialogueEntry Visibility="{Binding IsDialogue}"/>
+                            <panel:TextEntry Visibility="{Binding IsText}"/>
+                        </Grid>
+                    </Border>
                 </TabItem>
             </TabControl>
             <Grid x:Name="grid" VerticalAlignment="Top" Margin="150,0,0,0">

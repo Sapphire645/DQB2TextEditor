@@ -34,15 +34,23 @@
               Background="{StaticResource DarkBlueBrush}"
               ShowsPreview="True"/>
         <Line Y1="0" X2="1" X1="1" Y2="20" StrokeDashArray="0.25 2" StrokeDashCap="Round" IsHitTestVisible="False" Stroke=" Gray" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="2" Margin="4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBox Text="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window},UpdateSourceTrigger=PropertyChanged}"/>
-            <UC:DialoguePreview Grid.Row="1" DisplayText="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window}}"/>
-            <Button Grid.Row="2" Content="Save line" Click="SaveLine" Margin="4"/>
+            <TextBox Margin="1" Text="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window},UpdateSourceTrigger=PropertyChanged}"/>
+            <UC:DialoguePreview x:Name="DPrev" Margin="1"  Grid.Row="1" DisplayText="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Grid Grid.Row="2" Margin="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Save line" Click="SaveLine" Margin="4"/>
+                <Button Grid.Column="1" Content="Copy line" Click="CopyLine" Margin="4"/>
+            </Grid>
+            
         </Grid>
     </Grid>
 </UserControl>

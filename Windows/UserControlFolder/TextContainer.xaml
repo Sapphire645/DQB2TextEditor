@@ -24,7 +24,10 @@
             <Button Name="AddButtonName" 
                     HorizontalAlignment="Center" 
                     Click="Button_Click" Visibility = "Collapsed"
-                    FontSize="6" Content=" + " ToolTip="Actually, I know I'm giving you the choice but Do Not. Not allowed.">
+                    FontSize="6" Content=" + " ToolTipService.InitialShowDelay="0">
+                <Button.ToolTip>
+                    <Label Content="Actually, I know I'm giving you the choice but Do Not. Not allowed." Background="Black"/>
+                </Button.ToolTip>
             </Button>
         </StackPanel>
     </Viewbox>
