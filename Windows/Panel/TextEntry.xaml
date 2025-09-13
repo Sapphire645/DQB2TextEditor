@@ -40,7 +40,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBox Margin="1" Text="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window},UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox TextWrapping="WrapWithOverflow" Margin="1" Text="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window},UpdateSourceTrigger=PropertyChanged}"/>
             <UC:DialoguePreview x:Name="DPrev" Margin="1"  Grid.Row="1" DisplayText="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window}}"/>
             <Grid Grid.Row="2" Margin="4">
                 <Grid.ColumnDefinitions>
