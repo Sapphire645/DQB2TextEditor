@@ -125,12 +125,39 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = Regex.Replace(LineProcessed, @"(?<=<cap>)[a-zA-Z]", match => match.Value.ToUpper());
             LineProcessed = LineProcessed.Replace("<cap>", "");
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
-            LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
             return LineProcessed;
         }
         public static string ProcessLine(string baseText)
         {
             return convert(baseText);
+        }
+
+        public static string ProcessLineTCRF(string baseText)
+        {
+            var LineProcessed = baseText.Replace("<6>", "‛");
+            LineProcessed = LineProcessed.Replace("<9>", "’");
+            LineProcessed = LineProcessed.Replace("<66>", "“");
+            LineProcessed = LineProcessed.Replace("<99>", "”");
+            LineProcessed = LineProcessed.Replace("<1>", "`");
+            LineProcessed = LineProcessed.Replace("<key>", "");
+            LineProcessed = LineProcessed.Replace("<scron>", "");
+            LineProcessed = LineProcessed.Replace("<scroff>", "");
+            //LineProcessed = LineProcessed.Replace("<off>", "");
+            LineProcessed = LineProcessed.Replace("<-->", "─");
+            LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
+            LineProcessed = LineProcessed.Replace("<--->", "⎯⎯ ");
+            LineProcessed = LineProcessed.Replace("<note>", "♩");
+            LineProcessed = LineProcessed.Replace("<pname>", ViewModel.PlayerName);
+            LineProcessed = Regex.Replace(LineProcessed, @"(?<=<cap>)[a-zA-Z]", match => match.Value.ToUpper());
+            LineProcessed = LineProcessed.Replace("<cap>", "");
+            LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
+            LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
+            string pattern = @"<([^:]+):([^>]+)>";
+            string replacement = "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>";
+
+            string result = Regex.Replace(LineProcessed, pattern, replacement);
+            result = result.Replace(Environment.NewLine, "<br> ");
+            return result;
         }
         private static void OnHighlightedTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

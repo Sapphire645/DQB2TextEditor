@@ -140,7 +140,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Button IsEnabled="{Binding selected}" Background="Black" Content="  Edit Selected  " Click="Edit_Selected_Click" Margin="2" />
-                    <Button IsEnabled="{Binding selected}" Background="Black" Grid.Row="2" Content="  Save Edited  " Click="Save_Edited_Click" Margin="2"/>
+                    <Button IsEnabled="{Binding selected}" Background="Black" Grid.Row="2" Content="  TEMP: COPY FOR TCRF  " Click="Save_Edited_Click" Margin="2"/>
                 </Grid>
             </Grid>
         </Grid>

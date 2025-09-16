@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -275,7 +276,14 @@ namespace DQB2TextEditor.Windows
         }
         public void EditToSelected()
         {
-
+            String temp = "";
+            //TEMPORAL
+            foreach(var line in TextLinesPreview)
+            {
+                Console.WriteLine(TextBlockExtensions.ProcessLineTCRF(line));
+                temp += TextBlockExtensions.ProcessLineTCRF(line).Replace('\0',' ') + Environment.NewLine;
+            }
+            Clipboard.SetText(temp);
         }
 
         public void UpdateEditText()
