@@ -56,12 +56,12 @@ namespace DQB2TextEditor.Windows.UserControlFolder
         public void displayAddButton(TextEntry par)
         {
             parent = par;
-            AddButtonName.Visibility = Visibility.Visible;
+            //AddButtonName.Visibility = Visibility.Visible;
         }
 
         public void removeAddButton()
         {
-            AddButtonName.Visibility = Visibility.Collapsed;
+            //AddButtonName.Visibility = Visibility.Collapsed;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

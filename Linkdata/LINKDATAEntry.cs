@@ -13,7 +13,7 @@ namespace DQB2TextEditor.Linkdata
         public UInt64 CompressedSize { get; set; }
         public bool IsCompressed { get; set; }
         public ushort Index { get; private set; }
-        internal LDFolder LINKDATAData { get; private set; }
+        internal LDFile LINKDATAData { get; private set; }
         public LINKDATAEntry(ushort index, byte[] bytes, FolderType Type)
         {
             Index = index;
@@ -25,17 +25,15 @@ namespace DQB2TextEditor.Linkdata
             switch (Type)
             {
                 case FolderType.TextData:
-                    LINKDATAData = new LDFolder_TextData(this);
+                    LINKDATAData = new LDFile_TextData(this);
                     break;
                 case FolderType.FlowData:
-                    LINKDATAData = new LDFolder(this);
+                    LINKDATAData = new LDFile(this);
                     break;
                case FolderType.Unknown:
-                    LINKDATAData = new LDFolder(this);
+                    LINKDATAData = new LDFile(this);
                     break;
             }
         }
-
-
     }
 }

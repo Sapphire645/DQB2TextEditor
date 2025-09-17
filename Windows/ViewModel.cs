@@ -1,4 +1,5 @@
-﻿using DQB2TextEditor.Linkdata;
+﻿using DQB2TextEditor.InfoReading;
+using DQB2TextEditor.Linkdata;
 using DQB2TextEditor.Proccessing;
 using DQB2TextEditor.Windows.Panel;
 using DQB2TextEditor.Windows.UserControlFolder;
@@ -116,8 +117,8 @@ namespace DQB2TextEditor.Windows
         public string Selection => SelectedTextGroup is Dialogue ? "Dialogue" : "Text";
         public string EditedSelection => EditingTextGroup is Dialogue ? "Dialogue" : "Text";
 
-        public Visibility IsDialogue => EditingTextGroup is Dialogue ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility IsText => EditingTextGroup is Dialogue ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility IsDialogue => EditingTextGroup is Dialogue && (!linkdata.Encrypted) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility IsText => linkdata.Encrypted || !(EditingTextGroup is Dialogue) ? Visibility.Visible : Visibility.Collapsed;
 
         private FontFamily PreviewFontFamilyEU = new FontFamily(new Uri("pack://application:,,,/"),"./Info/#DQB2_2");
         private FontFamily PreviewFontFamilyAS = SystemFonts.MessageFontFamily;
@@ -270,20 +271,17 @@ namespace DQB2TextEditor.Windows
         public void SelectedToEdit()
         {
             EditingTextGroup = SelectedTextGroup;
-            if (!(EditingTextGroup is Dialogue)) UpdateEditText();
+            if (!(EditingTextGroup is Dialogue) || linkdata.Encrypted) UpdateEditText();
             IsEditing = true;
             EditingLine = null;
         }
         public void EditToSelected()
         {
-            String temp = "";
-            //TEMPORAL
-            foreach(var line in TextLinesPreview)
-            {
-                Console.WriteLine(TextBlockExtensions.ProcessLineTCRF(line));
-                temp += TextBlockExtensions.ProcessLineTCRF(line).Replace('\0',' ') + Environment.NewLine;
-            }
-            Clipboard.SetText(temp);
+            EditingTextGroup.UpdateLines(TextLinesEdit.ToArray());
+            Dialogues = linkdata.Dialogues;
+            OnPropertyChanged(nameof(Dialogues));
+            OnPropertyChanged(nameof(MenuTexts));
+
         }
 
         public void UpdateEditText()

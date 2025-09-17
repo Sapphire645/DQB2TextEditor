@@ -47,10 +47,15 @@ namespace DQB2TextEditor.Linkdata
         public ObservableCollection<string> GetTextLinesPreview()
         {
             ObservableCollection<string> textLines = new ObservableCollection<string>(
-                ((LDFolder_TextData)TextDataFile.LINKDATAData).GetTextLinesPreview()
+                ((LDFile_TextData)TextDataFile.LINKDATAData).GetTextLinesPreview()
                 );
 
             return textLines;
+        }
+
+        public void UpdateLines(string[] lines)
+        {
+            ((LDFile_TextData)TextDataFile.LINKDATAData).UpdateLines(lines);
         }
     }
 }
