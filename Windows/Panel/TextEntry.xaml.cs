@@ -21,6 +21,8 @@ namespace DQB2TextEditor.Windows.Panel
     /// </summary>
     public partial class TextEntry : UserControl
     {
+
+        public String FilterText { get; set; }
         public TextEntry()
         {
             InitializeComponent();
@@ -91,6 +93,24 @@ namespace DQB2TextEditor.Windows.Panel
         private void CopyLine(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(TextBlockExtensions.ProcessLine(DPrev.DisplayText));
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            var filterText = FilterText?.Trim().ToLower() ?? String.Empty;
+            String a = null;
+            for (int i = LinesList.SelectedIndex+1; i < LinesList.Items.Count; i++)
+            {
+                a = LinesList.Items[i] as String;
+                if (a.ToLower().Contains(filterText))
+                {
+                    LinesList.SelectedItem = a;
+                    LinesList.ScrollIntoView(a);
+                    break;
+                }
+            }
+            LinesList.ScrollIntoView(a);
+
         }
     }
 }

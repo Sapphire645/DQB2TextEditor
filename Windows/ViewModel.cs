@@ -48,7 +48,6 @@ namespace DQB2TextEditor.Windows
                     OnPropertyChanged(nameof(SelectedTextGroup));
                     OnPropertyChanged(nameof(_currentLanguage));
                     OnPropertyChanged(nameof(PreviewFontFamily));
-                    UpdateEditText();
                 }
             }
         }
@@ -59,7 +58,7 @@ namespace DQB2TextEditor.Windows
 
 
         public ObservableCollection<Dialogue> Dialogues { get; private set; }
-        public ObservableCollection<TextGroup> MenuTexts => linkdata.MenuTexts;
+        public ObservableCollection<TextGroup> MenuTexts { get; private set; }
         public ObservableCollection<String> TextLinesPreview { get; private set; } = new ObservableCollection<string>();
 
         //For text editing.
@@ -164,6 +163,7 @@ namespace DQB2TextEditor.Windows
         }
 
         public String FilterText { get; set; } = String.Empty;
+        public String FilterTextGeneral { get; set; } = String.Empty;
 
         public ViewModel(SLViewModel SLVM, TextEditorWindow window)
         {
@@ -171,6 +171,7 @@ namespace DQB2TextEditor.Windows
             this.window = window;
             linkdata = SLVM.CreateLINKDATA();
             Dialogues = linkdata.Dialogues;
+            MenuTexts = linkdata.MenuTexts;
         }
 
 
@@ -186,6 +187,47 @@ namespace DQB2TextEditor.Windows
             OnPropertyChanged(nameof(PreviewIndex));
             _dialogue = SelectedTextGroup is Dialogue;
             OnPropertyChanged(nameof(DialogueHeight));
+        }
+
+        public async void TextFilterGeneral()
+        {
+            var newTexts = new ObservableCollection<TextGroup>();
+            var progressWindow = new ProgressWindow("Searching for string...", "Note: Things like names, player pronouns or other generated text wont filter properly."+Environment.NewLine +"Note 2: Text files are a bit broken so the search will sometimes hang on a few files.", (uint)linkdata.MenuTexts.Count);
+            progressWindow.Show();
+            var filterText = FilterTextGeneral?.Trim().ToLower() ?? String.Empty;
+
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+                int i = 0;
+                foreach (var textGroup in linkdata.MenuTexts)
+                {
+                    var mad = textGroup.GetTextLinesPreview().ToList();
+                    foreach (var line in mad)
+                    {
+                        var newline = line?.Trim().ToLower() ?? String.Empty;
+                        if (!String.IsNullOrEmpty(newline) && !newline.Equals("\0"))
+                        {
+                            if (newline.Contains(filterText) || Regex.Replace(newline, @"<(.*?)>", "").Contains(filterText))
+                            {
+                                newTexts.Add(textGroup);
+                                textGroup.PreviewLine = TrimAroundPhrase(line, filterText);
+                                break;
+                            }
+                        }
+                    }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+            MenuTexts = newTexts;
+            OnPropertyChanged(nameof(MenuTexts));
         }
 
         public async void TextFilter()
@@ -279,6 +321,7 @@ namespace DQB2TextEditor.Windows
         {
             EditingTextGroup.UpdateLines(TextLinesEdit.ToArray());
             Dialogues = linkdata.Dialogues;
+            MenuTexts = linkdata.MenuTexts;
             OnPropertyChanged(nameof(Dialogues));
             OnPropertyChanged(nameof(MenuTexts));
 

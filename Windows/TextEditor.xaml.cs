@@ -70,6 +70,10 @@ namespace DQB2TextEditor.Windows
         {
             viewModel.TextFilter();
         }
+        private void Search_Click_General(object sender, RoutedEventArgs e)
+        {
+            viewModel.TextFilterGeneral();
+        }
 
         private void SizeChange(object sender, SizeChangedEventArgs e)
         {
@@ -92,5 +96,7 @@ namespace DQB2TextEditor.Windows
         {
             viewModel.EditToSelected();
         }
+
+
     }
 }
