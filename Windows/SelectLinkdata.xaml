@@ -22,16 +22,19 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="Size:" MinWidth="120"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Size:" MinWidth="160"/>
             <TextBlock Text="{Binding Size}" TextAlignment="Right" Grid.Column="1" Foreground="{Binding VersionErrorSize}"/>
-            <TextBlock Text="Version detected:" MinWidth="120" HorizontalAlignment="Right" Grid.Row="1"/>
+            <TextBlock Text="Version detected:" MinWidth="160" HorizontalAlignment="Right" Grid.Row="1"/>
             <TextBlock Text="{Binding VersionName}" TextAlignment="Right" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1"  Foreground="{Binding VersionError}"/>
-        </Grid>
+            <TextBlock Text="LINKDATA_PATCH.IDX Found" HorizontalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2" Visibility="{Binding foundPatchV}" Foreground="LimeGreen"/>
+            </Grid>
 
         <Button Content="Confirm" Margin="6" IsEnabled="{Binding ConfirmEnabled}" Click="Confirm_Click"/>
     </StackPanel>

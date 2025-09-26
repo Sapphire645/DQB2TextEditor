@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DQB2TextEditor.Linkdata;
 using DQB2TextEditor.Proccessing;
+using System.IO;
 
 namespace DQB2TextEditor.Windows
 {
@@ -66,6 +57,9 @@ namespace DQB2TextEditor.Windows
         public Brush LinkdataError => linkdataerror ? (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["MediumOrangeBrush"] : Brushes.White; //Change
         public Brush VersionError => versionerror ? (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["MediumOrangeBrush"] : Brushes.White; //Change
         public Brush VersionErrorSize => versionerror ? Brushes.Gold : Brushes.White; //Change
+
+        public bool foundPatch = false;
+        public Visibility foundPatchV => foundPatch ? Visibility.Visible : Visibility.Collapsed;
         public bool ConfirmEnabled => !string.IsNullOrEmpty(LinkdataPath) && !linkdataerror && !versionerror;
         public string LinkdataPath
         {
@@ -99,11 +93,22 @@ namespace DQB2TextEditor.Windows
                         VersionName = "---";
                         _size = 0;
                     }
+                    string patch = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(value),"LINKDATA_PATCH.IDX");
+
+                    if (File.Exists(patch))
+                    {
+                        foundPatch = true;
+                    }
+                    else
+                    {
+                        foundPatch = false;
+                    }
                     OnPropertyChanged(nameof(LinkdataError));
                     OnPropertyChanged(nameof(VersionError));
                     OnPropertyChanged(nameof(VersionErrorSize));
                     OnPropertyChanged(nameof(ConfirmEnabled));
                     OnPropertyChanged(nameof(Size));
+                    OnPropertyChanged(nameof(foundPatchV));
                 }
 
             }

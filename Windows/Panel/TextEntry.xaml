@@ -65,7 +65,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBox TextWrapping="WrapWithOverflow" Margin="1" Text="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window},UpdateSourceTrigger=PropertyChanged}"/>
-            <UC:DialoguePreview x:Name="DPrev" Margin="1"  Grid.Row="1" DisplayText="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Viewbox Margin="1"  Grid.Row="1">
+                <UC:DialoguePreview x:Name="DPrev"  DisplayText="{Binding DataContext.EditingLine, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </Viewbox>
+            
             <Grid Grid.Row="2" Margin="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>

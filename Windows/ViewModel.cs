@@ -35,6 +35,19 @@ namespace DQB2TextEditor.Windows
         public static LINKDATA linkdata { get; private set; }
 
         public bool Asia => linkdata.AsianLanguages.Contains(_currentLanguage); //Format of the text preview.
+
+
+        public byte CurrentLinkdataFile
+        {
+            get { return _currentLinkdataFile; }
+            set
+            {
+                if (_currentLinkdataFile != value)
+                {
+                    _currentLinkdataFile = value;
+                }
+            }
+        }
         public byte CurrentLanguage
         {
             get { return _currentLanguage; }
@@ -52,6 +65,7 @@ namespace DQB2TextEditor.Windows
             }
         }
 
+        public static byte _currentLinkdataFile = 0;
         public static byte _currentLanguage = 0;
         public bool selected => _selectedTextGroup != null;
         public Visibility DialogueLoaded => _selectedTextGroup is Dialogue ? Visibility.Visible : Visibility.Collapsed;

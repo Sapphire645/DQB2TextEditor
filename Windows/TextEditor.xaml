@@ -355,6 +355,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Langauage:" Margin="5,0" VerticalAlignment="Center"/>
                 <ComboBox SelectedIndex="{Binding CurrentLanguage}" Grid.Column="1" VerticalContentAlignment="Center" ItemContainerStyle="{DynamicResource ComboBoxItemContainer}" ItemsSource="{Binding linkdata.Languages}" MinWidth="100"/>
@@ -362,7 +363,10 @@
                 <TextBlock Text="{Binding PNameDef, FallbackValue=PName}" IsHitTestVisible="False" Visibility="{Binding NameValid}" Grid.Column="2" Margin="8,6" Foreground="Gray" />
                 <ToggleButton Content="♂" Width="{Binding ActualHeight, ElementName=grid, Mode=OneWay}" IsChecked="{Binding Male}" Grid.Column="3" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Margin="2,0" FontSize="14"/>
                 <ToggleButton Content="♀" Width="{Binding ActualHeight, ElementName=grid, Mode=OneWay}" IsChecked="{Binding Female}" Grid.Column="4" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1" Margin="2,0" FontSize="14"/>
-                <StackPanel Background="Black" Orientation="Horizontal"  Grid.Column="5" Margin="0,4">
+                <ComboBox Name="VersionComboBox" SelectedIndex="{Binding CurrentLinkdataFile}" Grid.Column="5" VerticalContentAlignment="Center" ItemContainerStyle="{DynamicResource ComboBoxItemContainer}" MinWidth="100">
+                    MAIN
+                </ComboBox>
+                <StackPanel Background="Black" Orientation="Horizontal"  Grid.Column="6" Margin="0,4">
                     <TextBlock Text="Version:" Margin="4,0"/>
                     <TextBlock Text="{Binding linkdata.LINKDATAVersion}" Foreground="Gold" HorizontalAlignment="Right" Margin="4,0"/>
                 </StackPanel>
