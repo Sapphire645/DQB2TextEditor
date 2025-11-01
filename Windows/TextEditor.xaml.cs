@@ -2,6 +2,8 @@
 using DQB2TextEditor.Windows.UserControlFolder;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
+using System.Windows.Markup;
+
 
 namespace DQB2TextEditor.Windows
 {
@@ -32,6 +37,10 @@ namespace DQB2TextEditor.Windows
             DataContext = viewModel;
             InitializeComponent();
 
+            var str = new StringBuilder();
+            using (var writer = new StringWriter(str))
+                XamlWriter.Save(SaveMenuItem.Template, writer);
+            Debug.Write(str);
         }
 
         private void Dialogues_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,6 +106,17 @@ namespace DQB2TextEditor.Windows
             viewModel.EditToSelected();
         }
 
+        private void Save_Edited_toPatch_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void SaveMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+        }
     }
 }

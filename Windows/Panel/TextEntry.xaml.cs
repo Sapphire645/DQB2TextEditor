@@ -47,6 +47,7 @@ namespace DQB2TextEditor.Windows.Panel
         {
             var listBox = (ListBox)sender;
             var element = listBox.InputHitTest(e.GetPosition(listBox)) as DependencyObject;
+            if (element == null) return;
             var container = ItemsControl.ContainerFromElement(listBox, element) as ListBoxItem;
             if (container != null)
             {

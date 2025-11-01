@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -17,8 +18,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+
 using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
+
 
 namespace DQB2TextEditor.Windows
 {
@@ -124,6 +126,13 @@ namespace DQB2TextEditor.Windows
 
                     OnPropertyChanged(nameof(IsDialogue));
                     OnPropertyChanged(nameof(IsText));
+
+                    OnPropertyChanged(nameof(PreviewFontSize));
+                    OnPropertyChanged(nameof(PreviewLineSpace));
+                    OnPropertyChanged(nameof(PreviewPadding));
+                    OnPropertyChanged(nameof(PreviewFontFamily));
+                    OnPropertyChanged(nameof(PreviewFontSizeFurigana));
+                    EditingLine = "";
                 }
             }
         }
@@ -186,6 +195,8 @@ namespace DQB2TextEditor.Windows
             linkdata = SLVM.CreateLINKDATA();
             Dialogues = linkdata.Dialogues;
             MenuTexts = linkdata.MenuTexts;
+
+
         }
 
 
@@ -326,10 +337,11 @@ namespace DQB2TextEditor.Windows
 
         public void SelectedToEdit()
         {
-            EditingTextGroup = SelectedTextGroup;
-            if (!(EditingTextGroup is Dialogue) || linkdata.Encrypted) UpdateEditText();
             IsEditing = true;
             EditingLine = null;
+            EditingTextGroup = SelectedTextGroup;
+            if (!(EditingTextGroup is Dialogue) || linkdata.Encrypted) UpdateEditText();
+
         }
         public void EditToSelected()
         {
