@@ -522,12 +522,15 @@ namespace DQB2TextEditor.Windows
                     });
                 }
             });
-            foreach(var cmd in theDictionary)
+            var a = theDictionary.Keys.ToList();
+            a.Sort();
+            foreach (var ke in a)
             {
-                File.AppendAllText(path, "================ Command " + cmd.Key + " ================\n");
-                for(int argIndex = 0; argIndex < cmd.Value.Length; argIndex++)
+                var cmd = theDictionary[ke];
+                File.AppendAllText(path, "\n================ Command " + ke + " ================\n");
+                for(int argIndex = 0; argIndex < cmd.Length; argIndex++)
                 {
-                    var argList = cmd.Value[argIndex];
+                    var argList = cmd[argIndex];
                     if(argList != null)
                     {
                         File.AppendAllText(path, "-- Argument " + argIndex + " --\n");
@@ -536,6 +539,7 @@ namespace DQB2TextEditor.Windows
                         {
                             File.AppendAllText(path, arg.ToString() + ", ");
                         }
+                        File.AppendAllText(path,"\n");
                     }
                 }
             }
