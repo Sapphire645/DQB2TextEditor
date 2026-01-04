@@ -28,7 +28,7 @@ namespace DQB2TextEditor.Linkdata
                     LINKDATAData = new LDFile_TextData(this);
                     break;
                 case FolderType.FlowData:
-                    LINKDATAData = new LDFile(this);
+                    LINKDATAData = new LDFile_FlowData(this);
                     break;
                case FolderType.Unknown:
                     LINKDATAData = new LDFile(this);

@@ -117,6 +117,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = LineProcessed.Replace("<scron>", "");
             LineProcessed = LineProcessed.Replace("<scroff>", "");
             LineProcessed = LineProcessed.Replace("<off>", "");
+            LineProcessed = LineProcessed.Replace("<nbsp>", "\u00A0");
             LineProcessed = LineProcessed.Replace("<-->", "─");
             LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
             LineProcessed = LineProcessed.Replace("<--->", "⎯⎯ ");
@@ -125,6 +126,8 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = Regex.Replace(LineProcessed, @"(?<=<cap>)[a-zA-Z]", match => match.Value.ToUpper());
             LineProcessed = LineProcessed.Replace("<cap>", "");
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
+            //LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$cdef\((.*?)\)>(.*?)</color>", match => match.Groups[2].Value); //remove colour
             return LineProcessed;
         }
         public static string ProcessLine(string baseText)

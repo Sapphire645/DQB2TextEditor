@@ -5,9 +5,35 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DQB2TextEditor.Windows.Panel"
       mc:Ignorable="d" 
+      xmlns:UC="clr-namespace:DQB2TextEditor.Windows.UserControlFolder" 
+      xmlns:FDL="clr-namespace:DQB2TextEditor.Linkdata.LineEntry" 
       d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Name="BorderPreview" Grid.Row="1" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2" Margin="2">
+            <DockPanel>
+                <ListBox Name="LinesList" Background="Black" BorderThickness="0"
+             ItemsSource="{Binding DataContext.DialogueLinesEdit, RelativeSource={RelativeSource AncestorType=Window}}"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type FDL:FlowDataLine}">
+                            <UC:DialogueContainer FlowDataEntry="{Binding .}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+        <GridSplitter Grid.Column="1"
+      Width="6"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      Background="{StaticResource DarkBlueBrush}"
+      ShowsPreview="True"/>
+        <Line Y1="0" X2="1" X1="1" Y2="20" StrokeDashArray="0.25 2" StrokeDashCap="Round" IsHitTestVisible="False" Stroke=" Gray" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
     </Grid>
 </UserControl>

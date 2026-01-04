@@ -27,7 +27,7 @@ namespace DQB2TextEditor.Windows
         private void LinkdataPathUpdate(object sender, RoutedEventArgs e)
         {
             var dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.Filter = "LINKDATA|LINKDATA.IDX";
+            dlg.Filter = "LINKDATA|LINKDATA*.IDX";
             if (dlg.ShowDialog() == false) return;
 
             ViewModel.LinkdataPath = dlg.FileName;

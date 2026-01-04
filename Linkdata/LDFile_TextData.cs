@@ -1,11 +1,14 @@
 ﻿using DQB2TextEditor.Windows;
+using DQB2TextEditor.Windows.Panel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 
 namespace DQB2TextEditor.Linkdata
@@ -19,7 +22,7 @@ namespace DQB2TextEditor.Linkdata
         {
             get
             {
-                if (_lines==null) ExtractData();
+                if (_lines == null) ExtractData();
                 return _lines;
             }
         }
@@ -36,12 +39,32 @@ namespace DQB2TextEditor.Linkdata
             return Lines;
         }
 
+
+
+        private uint CountLines(byte[] uncompressData)
+        {
+            int pointer = 0x44;
+            uint pointerOld = 0;
+            bool loop = true;
+            uint count = 1;
+            while (loop)
+            {
+                uint thPointer = BitConverter.ToUInt32(uncompressData, pointer);
+                pointer += 4;
+                if (pointerOld + 1 != thPointer)
+                {
+                    loop = false;
+                }
+                pointerOld = thPointer;
+                count++;
+            }
+            return count - 1;
+        }
         private void ExtractData()
         {
             try
             {
                 byte[] uncompressData = uncompressedData;
-
                 //Need to change how I apporach this.
                 //This number counts the amount of "sections". A section is a colection of lines.
                 //This matters in text, not dialogue.
@@ -53,13 +76,27 @@ namespace DQB2TextEditor.Linkdata
                 uint linePointer = BitConverter.ToUInt32(uncompressData, (int)offsetPointer) + offsetPointer;
 
                 uint lineCount = (uint)((linePointer - offsetPointer) / 4);
-                //if (lineCount == 0) lineCount = sectionCount; //backup
+
+                //Guess we're gonna be bringing back the shenanigans for this one
+                //I did not miss this
+                if (lineCount == 0)
+                {
+                    lineCount = CountLines(uncompressData);
+                    offsetPointer = lineCount * 4 + 0x40;
+                    uint pointerFirst = BitConverter.ToUInt32(uncompressData, (int)(offsetPointer));
+                    //? I'm willing to try.
+                    lineCount = pointerFirst / 4;
+
+                }
+
                 _lines = new string[lineCount];
                 uint[] pointersLocal = new uint[lineCount];
                 for (int i = 0; i < lineCount; i++)
                 {
                     pointersLocal[i] = BitConverter.ToUInt32(uncompressData, (int)(offsetPointer + i * 4));
                 }
+
+
                 for (int i = 0; i < lineCount; i++)
                 {
                     uint pointer = (uint)(pointersLocal[i] + offsetPointer + i * 4);

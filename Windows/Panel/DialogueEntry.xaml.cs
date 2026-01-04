@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DQB2TextEditor.Linkdata.LineEntry;
+using DQB2TextEditor.Windows.UserControlFolder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,5 +26,6 @@ namespace DQB2TextEditor.Windows.Panel
         {
             InitializeComponent();
         }
+       
     }
 }

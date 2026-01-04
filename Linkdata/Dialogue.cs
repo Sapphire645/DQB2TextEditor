@@ -1,4 +1,5 @@
-﻿using DQB2TextEditor.Windows;
+﻿using DQB2TextEditor.Linkdata.LineEntry;
+using DQB2TextEditor.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +21,18 @@ namespace DQB2TextEditor.Linkdata
         public Dialogue(LINKDATAEntry flowDataFile, LINKDATAEntry[] textDataFiles, ushort index) : base(textDataFiles, index)
         {
             _FlowDataFile = flowDataFile;
+        }
+
+        public ObservableCollection<FlowDataLine> GetDialogueLines()
+        {
+            var textLines = ((LDFile_TextData)TextDataFile.LINKDATAData).GetTextLinesPreview();
+            var flows = ((LDFile_FlowData)_FlowDataFile.LINKDATAData).Flows;
+            ObservableCollection < FlowDataLine > flowlines = new ObservableCollection<FlowDataLine>();
+            for (int i = 0; i < flows.Count(); i++)
+            {
+                flowlines.Add(LineEntryFabric.CreateLineEntry(flows[i], textLines[i]));
+            }
+            return flowlines;
         }
     }
 }

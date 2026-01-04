@@ -8,6 +8,7 @@
     <Subsystem>console</Subsystem>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="info\code.txt" />
     <None Remove="info\colorcodes.txt" />
     <None Remove="info\DQB2_2.ttf" />
     <None Remove="Info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
@@ -19,6 +20,9 @@
     <None Remove="Info\versions\Switch-Release-EU-1.5.2.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="info\code.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Info\versions\Steam1.7.2_1.7.3d.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

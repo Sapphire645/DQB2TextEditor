@@ -32,47 +32,60 @@ namespace DQB2TextEditor.Linkdata
                     {
                         byte[] bin = ViewModel.linkdata.GetEntryBytes(Entry);
 
-                        if (_Files == null)
+                        if (Entry.IsCompressed)
                         {
-                            SplitSize = BitConverter.ToUInt32(bin, 0);
-                            FileCount = BitConverter.ToUInt32(bin, 4);
-                            UncompressedSize = BitConverter.ToUInt32(bin, 8);
-                        }
-                        list = new LDFileChunk[FileCount];
-
-                        UInt32 offset = 0x0C + FileCount * 4;
-                        for (int count = 0; count < FileCount; count++)
-                        {
-                            if (offset % 0x80 != 0) offset = (offset / 0x80 + 1) * 0x80;
-                            UInt32 size = BitConverter.ToUInt32(bin, 0x0C + count * 4);
-                            byte[] binary = new Byte[size];
-
-                            if(bin.Length < offset + 4 + size)
+                            if (_Files == null)
                             {
-                                size = (UInt32)( bin.Length - offset-4); //Crashes sometimes, not sure why....
+                                SplitSize = BitConverter.ToUInt32(bin, 0);
+                                FileCount = BitConverter.ToUInt32(bin, 4);
+                                UncompressedSize = BitConverter.ToUInt32(bin, 8);
                             }
-                            Array.Copy(bin, offset + 4, binary, 0, size);
-                            LDFileChunk file = null;
+                            list = new LDFileChunk[FileCount];
+
+                            UInt32 offset = 0x0C + FileCount * 4;
+                            for (int count = 0; count < FileCount; count++)
+                            {
+                                if (offset % 0x80 != 0) offset = (offset / 0x80 + 1) * 0x80;
+                                UInt32 size = BitConverter.ToUInt32(bin, 0x0C + count * 4);
+                                byte[] binary = new Byte[size];
+
+                                if (bin.Length < offset + 4 + size)
+                                {
+                                    size = (UInt32)(bin.Length - offset - 4); //Crashes sometimes, not sure why....
+                                }
+                                Array.Copy(bin, offset + 4, binary, 0, size);
+                                LDFileChunk file = null;
+                                switch (Type)
+                                {
+                                    case FolderType.TextData:
+                                        file = new LDFileChunk(binary, true);
+                                        break;
+                                    case FolderType.Unknown:
+                                        file = new LDFileChunk(binary, Entry.IsCompressed);
+                                        break;
+                                }
+                                list[count] = file;
+                                offset += size;
+                            }
+                        }
+                        else
+                        {
+                            list = new LDFileChunk[1];
+
                             switch (Type)
                             {
-                                case FolderType.TextData:
-                                    file = new LDFileChunk(binary, true);
-                                    break;
                                 case FolderType.FlowData:
-                                    file = new LDFileChunk(binary, false);
+                                    list[0] = new LDFileChunk(bin, false);
                                     break;
                                 case FolderType.Unknown:
-                                    file = new LDFileChunk(binary, Entry.IsCompressed);
+                                    list[0] = new LDFileChunk(bin, Entry.IsCompressed);
                                     break;
                             }
-
-                            list[count] = file;
-                            offset += size;
                         }
                         _Files = new WeakReference<LDFileChunk[]>(list);
                         return list;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine($"Error extracting files {Entry.Index}: {ex.Message}");
                     }
@@ -94,7 +107,7 @@ namespace DQB2TextEditor.Linkdata
                     // chunk size.
                     foreach (LDFileChunk fil in value)
                     {
-                        ms.Write(BitConverter.GetBytes(fil.CompressedSize+4),0,sizeof(UInt32));
+                        ms.Write(BitConverter.GetBytes(fil.CompressedSize + 4), 0, sizeof(UInt32));
                     }
                     // padding.
                     int count = 0x80 - ((int)ms.Length % 0x80);
@@ -139,8 +152,9 @@ namespace DQB2TextEditor.Linkdata
                 }
             }
         }
-        
-        protected void UpdateFile(byte[] newUncompressedData) {
+
+        protected void UpdateFile(byte[] newUncompressedData)
+        {
             //Copied Turtle-Insect code. I tried to do it on my own but I just messed everything up.
             Int32 packCount = (int)((newUncompressedData.Length + SplitSize - 1) / SplitSize);
 
@@ -184,6 +198,6 @@ namespace DQB2TextEditor.Linkdata
         //{
         //    System.IO.File.WriteAllBytes(path, _data);
         //}
-        
+
     }
 }

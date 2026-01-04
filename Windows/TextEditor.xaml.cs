@@ -59,7 +59,14 @@ namespace DQB2TextEditor.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.Filter = "Text File|*.txt";
+            if (dlg.ShowDialog() == false) return;
 
+            for (int i = 0; i < viewModel.TextLinesPreview.Count; i++)
+            {
+                File.AppendAllText(dlg.FileName, i + "\t" + viewModel.TextLinesPreview[i] + "\n");
+            }
         }
 
         private void ExportMenu_Click(object sender, RoutedEventArgs e)
@@ -117,6 +124,18 @@ namespace DQB2TextEditor.Windows
             button.ContextMenu.PlacementTarget = button;
             button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             button.ContextMenu.IsOpen = true;
+        }
+
+        private void ObtainLinesFrom(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.Filter = "Text File|*.txt";
+            if (dlg.ShowDialog() == false) return;
+
+            int[] l = { 218, };
+
+            //viewModel.ExportAllLinesFrom(l, dlg.FileName);
+            viewModel.ExtractCommandArguments(dlg.FileName);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DQB2TextEditor.InfoReading;
 using DQB2TextEditor.Linkdata;
+using DQB2TextEditor.Linkdata.LineEntry;
 using DQB2TextEditor.Proccessing;
 using DQB2TextEditor.Windows.Panel;
 using DQB2TextEditor.Windows.UserControlFolder;
@@ -11,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,7 +26,7 @@ using System.Windows.Media;
 
 namespace DQB2TextEditor.Windows
 {
-    internal class ViewModel : INotifyPropertyChanged
+    internal class ViewModel : ObtainData, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -79,6 +81,8 @@ namespace DQB2TextEditor.Windows
 
         //For text editing.
         public ObservableCollection<String> TextLinesEdit { get; private set; } = new ObservableCollection<string>();
+
+        public ObservableCollection<FlowDataLine> DialogueLinesEdit { get; private set; } = new ObservableCollection<FlowDataLine>();
 
         private TextGroup _selectedTextGroup;
 
@@ -195,10 +199,8 @@ namespace DQB2TextEditor.Windows
             linkdata = SLVM.CreateLINKDATA();
             Dialogues = linkdata.Dialogues;
             MenuTexts = linkdata.MenuTexts;
-
-
+            InformationReading.vModel = this;
         }
-
 
         public void UpdatePreviewText()
         {
@@ -331,7 +333,6 @@ namespace DQB2TextEditor.Windows
                     return result;
                 }
             }
-
             return ""; // Phrase not found
         }
 
@@ -341,6 +342,10 @@ namespace DQB2TextEditor.Windows
             EditingLine = null;
             EditingTextGroup = SelectedTextGroup;
             if (!(EditingTextGroup is Dialogue) || linkdata.Encrypted) UpdateEditText();
+            else
+            {
+                UpdateEditDialogue();
+            }
 
         }
         public void EditToSelected()
@@ -350,7 +355,20 @@ namespace DQB2TextEditor.Windows
             MenuTexts = linkdata.MenuTexts;
             OnPropertyChanged(nameof(Dialogues));
             OnPropertyChanged(nameof(MenuTexts));
-
+        }
+        public void UpdateEditDialogue()
+        {
+            DialogueLinesEdit.Clear();
+            if (EditingTextGroup == null) return;
+            var mad = ((Dialogue)EditingTextGroup).GetDialogueLines().ToList();
+            foreach (var line in mad)
+            {
+                DialogueLinesEdit.Add(line);
+            }
+            //PreviewIndex = SelectedTextGroup.TextDataIndex;
+            //OnPropertyChanged(nameof(PreviewIndex));
+            //_dialogue = SelectedTextGroup is Dialogue;
+            //OnPropertyChanged(nameof(DialogueHeight));
         }
 
         public void UpdateEditText()
@@ -411,5 +429,120 @@ namespace DQB2TextEditor.Windows
                 OnPropertyChanged(nameof(EditingLine));
             }
         }
+        //---------------------------------------
+
+        public (List<List<string>>,List<bool>) GetNPCFiles()
+        {
+            TextGroup names = linkdata.MenuTexts[21];
+            var res = names.GetTextLinesPreviewAllLang();
+            List<bool> asi = new List<bool>();
+            for (int i = 0; i < res.Count; i++)
+            {
+                asi.Add(linkdata.AsianLanguages.Contains((byte)i));
+            }
+            return (res, asi);
+        }
+
+        //--------------------------------------------
+
+        //Exporting
+
+        public async void ExportAllLinesFrom(int[] CharID, string path)
+        {
+            var newDialogues = new ObservableCollection<Dialogue>();
+            var progressWindow = new ProgressWindow("Searching for all lines...", "This might take a while.", (uint)linkdata.Dialogues.Count);
+            progressWindow.Show();
+            var filterText = FilterText?.Trim().ToLower() ?? String.Empty;
+            File.WriteAllText(path,"");
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+                int i = 0;
+                foreach (var dialogue in linkdata.Dialogues)
+                {
+                    var mad = dialogue.GetDialogueLines().ToList();
+                    foreach (var entry in mad)
+                    {
+                        var arg = entry.GetArgument(0);
+                        int id = (int)arg.Item1;
+                        if (CharID.Contains(id))
+                        {
+                            if (!String.IsNullOrEmpty(entry.Line) && !entry.Line.Equals("\0"))
+                                File.AppendAllText(path, "=-=-=-=-=-=-=-=-=-=-=-= " + id + " =-=-=-=-=-=-=-=-=-=-=-=\n" + TextBlockExtensions.ProcessLine(entry.Line) + "\n");
+                        }
+                    }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+            OnPropertyChanged(nameof(Dialogues));
+        }
+
+        public async void ExtractCommandArguments(string path)
+        {
+            var theDictionary = new Dictionary<ushort, List<int>[]>();
+            var progressWindow = new ProgressWindow("Searching for all lines...", "This might take a while.", (uint)linkdata.Dialogues.Count);
+            progressWindow.Show();
+
+            File.WriteAllText(path, "");
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+                int i = 0;
+                foreach (var dialogue in linkdata.Dialogues)
+                {
+                    var mad = dialogue.GetDialogueLines().ToList();
+                    foreach (var entry in mad)
+                    {
+                        if(!theDictionary.ContainsKey(entry.command))
+                            theDictionary.Add(entry.command, new List<int>[11]);
+                        for(int argIndex = 0; argIndex < 11; argIndex++)
+                        {
+                            var arg = entry.GetArgument(argIndex);
+                            if((int)arg.Item1 != -1)
+                            {
+                                if (theDictionary[entry.command][argIndex] == null)
+                                    theDictionary[entry.command][argIndex] = new List<int>();
+                                if (!theDictionary[entry.command][argIndex].Contains((int)arg.Item1))
+                                    theDictionary[entry.command][argIndex].Add((int)arg.Item1);
+                            }
+                        }
+                    }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            foreach(var cmd in theDictionary)
+            {
+                File.AppendAllText(path, "================ Command " + cmd.Key + " ================\n");
+                for(int argIndex = 0; argIndex < cmd.Value.Length; argIndex++)
+                {
+                    var argList = cmd.Value[argIndex];
+                    if(argList != null)
+                    {
+                        File.AppendAllText(path, "-- Argument " + argIndex + " --\n");
+                        argList.Sort();
+                        foreach (var arg in argList)
+                        {
+                            File.AppendAllText(path, arg.ToString() + ", ");
+                        }
+                    }
+                }
+            }
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+        }
+
+
     }
 }

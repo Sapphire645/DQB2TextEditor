@@ -296,7 +296,8 @@
                                 <Button IsEnabled="{Binding selected}" VerticalAlignment="Top" Content="  Export...  " Margin="2" Click="ExportMenu_Click">
                                     <Button.ContextMenu>
                                         <ContextMenu x:Name="ExportMenu">
-                                            <MenuItem Header="Sub-option 1"/>
+                                            <MenuItem Header="Export raw text" Click="Button_Click"/>
+                                            <MenuItem Header="OBTAIN ALL LINES FROM X" Click="ObtainLinesFrom"/>
                                             <MenuItem Header="Sub-option 2"/>
                                         </ContextMenu>
                                     </Button.ContextMenu>

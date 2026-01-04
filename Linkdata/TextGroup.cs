@@ -53,6 +53,18 @@ namespace DQB2TextEditor.Linkdata
             return textLines;
         }
 
+        public List<List<string>> GetTextLinesPreviewAllLang()
+        {
+            List<List<string>> rt = new List<List<string>>();
+            for(int i = 0; i < _TextDataFiles.Length; i++)
+            {
+                rt.Add(new List<string>(
+                ((LDFile_TextData)_TextDataFiles[i].LINKDATAData).GetTextLinesPreview()
+                ));
+            }
+            return rt;
+        }
+
         public void UpdateLines(string[] lines)
         {
             ((LDFile_TextData)TextDataFile.LINKDATAData).UpdateLines(lines);
