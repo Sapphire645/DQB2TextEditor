@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace DQB2TextEditor.Windows.UserControlFolder
 {
@@ -40,20 +42,6 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             set
             {
                 SetValue(FlowDataEntryProperty, value);
-                //Change
-                if (value.GetArgumentName(0).Equals("char")){
-                    CharName = InformationReading.GetCharNames((ushort)(int)value.GetArgument(0).Item1, ViewModel._currentLanguage);
-                }
-                if(value.Line != null && value.Line != "")
-                {
-                    NameVisible = Visibility.Visible;
-                }
-                else
-                {
-                    NameVisible = Visibility.Collapsed;
-                }
-
-
             }
         }
 
@@ -64,13 +52,14 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                 ObservableCollection<string> args = new ObservableCollection<string>();
                 for (int i = 0; i < FlowDataEntry.argumentCount; i++)
                 {
-                    args.Add(FlowDataEntry.GetArgumentName(i) + "\n"+ FlowDataEntry.GetArgument(i).Item1.ToString());
+                    if(FlowDataEntry.GetArgumentName(i) != null)
+                        args.Add(i + " | " + FlowDataEntry.GetArgumentName(i) + "\n     "+ FlowDataEntry.GetArgument(i).Item1.ToString());
                 }
                 return args;
-                    
+               
             }
         }
-        public String CommandName => FlowDataEntry.GetCommandName();
+        public String CommandName => FlowDataEntry.command + " | " + FlowDataEntry.GetCommandName();
 
         public bool unkonownFlag => FlowDataEntry.unkonownFlag;
 
@@ -84,7 +73,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LineVisible)));
             }
         }
-        private Visibility _nameVisible = Visibility.Collapsed;
+        private Visibility _nameVisible = Visibility.Hidden;
         public Visibility NameVisible
         {
             get => _nameVisible;
@@ -105,34 +94,92 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             }
         }
 
+        public string Line
+        {
+            get {
+                if (ViewModel.Asia && CharName != null)
+                {
+                    return CharName + "「" + FlowDataEntry.Line.Replace("<br>", Environment.NewLine + "    ") ;
+                }
+                else
+                {
+                    return FlowDataEntry.Line;
+                }
+            }
+        }
 
 
         private void RunCheck(object sender, RoutedEventArgs e)
         {
-            if (FlowDataEntry.GetArgumentName(0) != null && FlowDataEntry.GetArgumentName(0).Equals("char"))
-            {
-                CharName = InformationReading.GetCharNames((ushort)(int)FlowDataEntry.GetArgument(0).Item1, ViewModel._currentLanguage);
-            }
-            if (FlowDataEntry.Line != null && !String.IsNullOrEmpty(FlowDataEntry.Line.Trim()) && !FlowDataEntry.Line.Trim().Equals("\0"))
-            {
-                NameVisible = Visibility.Visible;
-            }
-            else
-            {
-                NameVisible = Visibility.Collapsed;
-                LineVisible = Visibility.Collapsed;
-            }
-            if (FlowDataEntry.Line != null && FlowDataEntry.Line.Contains("<off>")) //Turn off bg
-            {
+           
+               
+            if (FlowDataEntry.Line != null && FlowDataEntry.command == 118){
+                NameVisible = Visibility.Hidden;
                 TextBoxBG.Background = Brushes.Transparent;
                 TextBoxName.Background = Brushes.Transparent;
                 TextBoxBG.BorderBrush = Brushes.Transparent;
                 TextBoxName.BorderBrush = Brushes.Transparent;
+                TextBoxLine.TextAlignment = TextAlignment.Center;
             }
             else
             {
+                if (FlowDataEntry.Line != null && FlowDataEntry.Line.Contains("<show("))
+                {
+                    CharName = "<$cdef(73)>" + Regex.Match(FlowDataEntry.Line, @"<show\((.*?)\)>").Groups[1].Value + "</color>";
+                }
+                else
+                    if (FlowDataEntry.GetArgumentName(0) != null && FlowDataEntry.GetArgument(0).Item2 == typeof(Character))
+                    {
+                        if ((int)FlowDataEntry.GetArgument(0).Item1 == 0) 
+                            CharName = null;
+                        else
+                            CharName = InformationReading.GetCharNames((ushort)(int)FlowDataEntry.GetArgument(0).Item1, ViewModel._currentLanguage);
+                    }
 
-            }//Turn off bg
+                //NAME ASIA
+                if (ViewModel.Asia)
+                {
+                    if (FlowDataEntry.Line != null && !String.IsNullOrEmpty(FlowDataEntry.Line.Trim()) && !FlowDataEntry.Line.Trim().Equals("\0"))
+                    {
+                        NameVisible = Visibility.Hidden;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Line)));
+                    }
+                    else
+                    {
+                        NameVisible = Visibility.Hidden;
+                        LineVisible = Visibility.Hidden;
+                    }
+                    
+                }
+                else //NAME EU
+                {
+                    if (FlowDataEntry.Line != null && !String.IsNullOrEmpty(FlowDataEntry.Line.Trim()) && !FlowDataEntry.Line.Trim().Equals("\0"))
+                    {
+                        NameVisible = Visibility.Visible;
+                    }
+                    else
+                    {
+                        NameVisible = Visibility.Hidden;
+                        LineVisible = Visibility.Hidden;
+                    }
+                }
+                    
+
+                
+                if (FlowDataEntry.Line != null && FlowDataEntry.Line.Contains("<off>")) //Turn off bg
+                {
+                    TextBoxBG.Background = Brushes.Transparent;
+                    TextBoxName.Background = Brushes.Transparent;
+                    TextBoxBG.BorderBrush = Brushes.Transparent;
+                    TextBoxName.BorderBrush = Brushes.Transparent;
+                }
+                else
+                {
+
+                }//Turn off bg
+            }
+            
+            
             
         }
     }

@@ -109,19 +109,7 @@ namespace DQB2TextEditor.InfoReading
            
             foreach (String line in lines)
             {
-                var Line = line.Split("#")[0];
-                Line = Line.Trim();
-                var Values = Line.Split("\t");
-                var NumberCommand = Values[0].Split(":");
-                CommandInfo Command = new CommandInfo(ushort.Parse(NumberCommand[0]), NumberCommand[1].Trim());
-                if (Values.Length > 1)
-                {
-                    foreach (var Arg in Values[1].Split(","))
-                    {
-                        var NumberArg = Arg.Split(":");
-                        Command.Arguments[uint.Parse(NumberArg[0])] = NumberArg[1].Trim();
-                    }
-                }
+                CommandInfo Command = new CommandInfo(line.Trim());
                 Commands.Add(Command.Command, Command);
             }
         }

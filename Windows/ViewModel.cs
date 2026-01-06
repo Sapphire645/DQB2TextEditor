@@ -38,7 +38,7 @@ namespace DQB2TextEditor.Windows
 
         public static LINKDATA linkdata { get; private set; }
 
-        public bool Asia => linkdata.AsianLanguages.Contains(_currentLanguage); //Format of the text preview.
+        public static bool Asia => linkdata.AsianLanguages.Contains(_currentLanguage); //Format of the text preview.
 
 
         public byte CurrentLinkdataFile
@@ -147,12 +147,12 @@ namespace DQB2TextEditor.Windows
         public Visibility IsText => linkdata.Encrypted || !(EditingTextGroup is Dialogue) ? Visibility.Visible : Visibility.Collapsed;
 
         private FontFamily PreviewFontFamilyEU = new FontFamily(new Uri("pack://application:,,,/"),"./Info/#DQB2_2");
-        private FontFamily PreviewFontFamilyAS = SystemFonts.MessageFontFamily;
+        private FontFamily PreviewFontFamilyAS = new FontFamily(new Uri("pack://application:,,,/"), "./Info/#PRGothIWA-HW-Dm");
         public FontFamily PreviewFontFamily => Asia ? PreviewFontFamilyAS : PreviewFontFamilyEU;
-        public int PreviewFontSize => PreviewFontFamily == PreviewFontFamilyEU ? 14 : 12;
-        public int PreviewLineSpace => PreviewFontFamily == PreviewFontFamilyEU ? 13 : 18;
-        public Thickness PreviewPadding => PreviewFontFamily == PreviewFontFamilyEU ? new Thickness(12, 7,12,7) : new Thickness(12, 2, 12, 2);
-        public int PreviewFontSizeFurigana => 5;
+        public float PreviewFontSize => PreviewFontFamily == PreviewFontFamilyEU ? 14.0f : 10.5f;
+        public float PreviewLineSpace => PreviewFontFamily == PreviewFontFamilyEU ? 13.0f : 18.2f;
+        public Thickness PreviewPadding => PreviewFontFamily == PreviewFontFamilyEU ? new Thickness(12, 7,12,0) : new Thickness(13, 0.5, 0, 0);
+        public float PreviewFontSizeFurigana => 4.6f;
 
         private String playerName;
         private bool gender = false;
@@ -467,8 +467,24 @@ namespace DQB2TextEditor.Windows
                         int id = (int)arg.Item1;
                         if (CharID.Contains(id))
                         {
-                            if (!String.IsNullOrEmpty(entry.Line) && !entry.Line.Equals("\0"))
-                                File.AppendAllText(path, "=-=-=-=-=-=-=-=-=-=-=-= " + id + " =-=-=-=-=-=-=-=-=-=-=-=\n" + TextBlockExtensions.ProcessLine(entry.Line) + "\n");
+                            //if (!String.IsNullOrEmpty(entry.Line) && !entry.Line.Equals("\0"))
+                            //    File.AppendAllText(path, id + "\t" + TextBlockExtensions.ProcessLine(entry.Line.Replace("<br>", "<brr>")).Replace("<brr>", "<br>") + "\n");
+                        }
+                        else
+                        {
+                            if(id == 0 && entry.Line.Contains("<show(Malroth)>"))
+                            {
+                                if (!String.IsNullOrEmpty(entry.Line) && !entry.Line.Equals("\0"))
+                                    File.AppendAllText(path, id + "\t" + TextBlockExtensions.ProcessLine(entry.Line.Replace("<br>", "<brr>")).Replace("<brr>", "<br>") + "\n");
+                            }
+                            else
+                            {
+                                if (entry.command == 118 && id != 54 && id != 746 )
+                                {
+                                   // if (!String.IsNullOrEmpty(entry.Line) && !entry.Line.Equals("\0"))
+                                    //    File.AppendAllText(path, id + "\t" + TextBlockExtensions.ProcessLine(entry.Line.Replace("<br>", "<brr>")).Replace("<brr>", "<br>") + "\n");
+                                }
+                            }
                         }
                     }
                     i++;

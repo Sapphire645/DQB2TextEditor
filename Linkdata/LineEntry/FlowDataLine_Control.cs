@@ -8,7 +8,7 @@ namespace DQB2TextEditor.Linkdata.LineEntry
 {
     internal class FlowDataLine_Control : FlowDataLine
     {
-        public FlowDataLine_Control(byte[] data, string line) : base(data, new Type[0], line)
+        public FlowDataLine_Control(byte[] data, string line) : base(data, line)
         {
 
         }

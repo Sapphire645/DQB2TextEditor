@@ -132,10 +132,10 @@ namespace DQB2TextEditor.Windows
             dlg.Filter = "Text File|*.txt";
             if (dlg.ShowDialog() == false) return;
 
-            int[] l = { 218, };
+            int[] l = { 377, 541, 700 };
 
-            //viewModel.ExportAllLinesFrom(l, dlg.FileName);
-            viewModel.ExtractCommandArguments(dlg.FileName);
+            viewModel.ExportAllLinesFrom(l, dlg.FileName);
+            //viewModel.ExtractCommandArguments(dlg.FileName);
         }
     }
 }

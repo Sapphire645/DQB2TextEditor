@@ -10,9 +10,8 @@ namespace DQB2TextEditor.Linkdata.LineEntry
     {
         public static FlowDataLine CreateLineEntry(byte[] data, string line)
         {
-            Type[] types = { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int) };
 
-            return new FlowDataLine(data, types, line);
+            return new FlowDataLine(data, line);
         }
     }
 }

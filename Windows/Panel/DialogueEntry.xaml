@@ -12,8 +12,6 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Name="BorderPreview" Grid.Row="1" BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="2" Margin="2">
             <DockPanel>
@@ -28,12 +26,5 @@
                 </ListBox>
             </DockPanel>
         </Border>
-        <GridSplitter Grid.Column="1"
-      Width="6"
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Stretch"
-      Background="{StaticResource DarkBlueBrush}"
-      ShowsPreview="True"/>
-        <Line Y1="0" X2="1" X1="1" Y2="20" StrokeDashArray="0.25 2" StrokeDashCap="Round" IsHitTestVisible="False" Stroke=" Gray" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
     </Grid>
 </UserControl>

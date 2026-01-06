@@ -1,46 +1,75 @@
-1: >> SYNC_ANIMATIONS
-10: >> WAIT	0:time
-20: * FADE_IN	0:bool,1:time
-21: * FADE_OUT	0:bool,1:time
-50: * CAMERA_END
-51: * CAMERA_HOLD	0:time
-53: * CAMERA_START
-54: * CAMMERA_SOURCE	0:x,1:y,2:z,3:time,4:bool?
-55: * CAMMERA_DEST	0:x,1:y,2:z,3:time,4:bool?
-56: * CAMERA_TARGET	0:?,1:?,2:time,3:?
-57: * CAMERA_RELEASE_TARGET	0:bool
-58: * CAMMERA_SOURCE2?	0:x,1:y,2:z,3:time
-59: * CAMMERA_DEST2?	0:x,1:y,2:z,3:time
-61: * CAMERA_START_2
-70: ?70_LOCK_CHAR	0:char,1:bool
-101: >>APPEAR_DISSAPEAR	0:char,1:bool
-104: >> GO_TO_COORD	0:char,1:x,2:y,3:z,4:bool,5:bool	
-105: >> 105GO_TO	0:char,1:?,2:?,3:?
-106: >> GO_TO_END?	0:char,1:char
-110: TEXTBOX	0:char,1:anim,2:scron/scroff,4:index
-111: TEXTBOX_YES_NO	0:char,1:anim,2:scron/scroff,4:index
-113: TEXTBOX_UI	4:?
-114: *114??	0:char,1:bool
-115: >> WARP	0:char,1:?,2:?,3:?
-118: OFF_TEXTBOX	0:char?,4:index
-119: * FADE	0:true
-120: ANIMATION	0:char,1:anim,2:staybool
-130: >> TARGET_SPEAKER?	0:char
-132: >> TARGET_PLAYER	0:char
-133: >> TARGET_CHAR	0:char,1:target
-136: >> TURN_COORD	0:char
-138: >> SET_TURN_TO_SPEAKER	0:char,1:bool
-160: *160??	0:char,1:bool
-180: >> GO_TO_CHAR	0:char,1:target
-210: ?CLIFFDEST210	0:id
-223: DEFAULT_ANIMATION	0:char
-320: ?CLIFFDEST320	0:id
-358: ?358_LOCK_CHAR	0:char,1:bool
-407: + ITEM	0:id
-440: - POINTER_SPLIT_POINT	0:type #0:Yes/No 10:Gender 13:Working 14:Random
-441: - POINTER_END_441
-442: - POINTER_START_442
-443: - POINTER_YES_NO_BEGGINING_LOOPBACK
-444: - POINTER_JOIN
-445: - POINTER_END_445
-450: - END
+0: ???	0	0:int:???
+1: SYNC_ANIMATIONS	0	
+10: WAIT	0	0:int:Miliseconds
+20: FADE_IN	0	0:boolext:???,1:int:Miliseconds
+21: FADE_OUT	0	0:boolext:???,1:int:Miliseconds
+50: CAMERA_END	0	5:bool:???,10:bool:???
+51: CAMERA_HOLD	0	0:int:Miliseconds
+52: CAMERA_???	0	0:int:Miliseconds,1:int:???,2:boolext:???,3:int:???,4:boolext2:???
+53: CAMERA_START	0	
+54: CAMERA_SOURCE	0	0:float:x,1:float:y,2:float:z,3:int:Miliseconds,4:boolext2:???
+55: CAMERA_DEST	0	0:float:x,1:float:y,2:float:z,3:int:Miliseconds,4:boolext2:???
+56: CAMERA_TARGET	0	0:int:???,1:int:???,2:int:Miliseconds,3:boolext2:???
+57: CAMERA_RELEASE_TARGET	0	0:boolext:???
+58: CAMERA_SNAP_SOURCE	0	0:float:x,1:float:y,2:float:z
+59: CAMERA_SNAP_DEST	0	0:float:x,1:float:y,2:float:z
+61: CAMERA_START2???	0	
+62: CAMERA_???	0	
+63: CAMERA_???	0	0:int:???,1:int:???,2:int:Miliseconds,3:boolext:???,4:boolext:???
+64: CAMERA_???	0	0:bool0:???,1:int:???,2:int:???
+65: CAMERA_???	0	1:int:???,2:int:???
+66: CAMERA_???	0	0:int:???,1:int:???,2:int:???
+67: CAMERA_???	0	
+68: CAMERA_???	0	
+70: LOCK_CHAR	0	0:chr:Character,1:boolext:???
+71: ???	0	0:boolext:???
+97: ???	0	0:chr:Character,1:int:???,2:int:???,3:int:???,4:int:???
+98: ???	0	0:int:???,1:int:???,2:int:???,3:int:???,4:int:???,5:bool:???
+99: ???	0	0:chr:Character,3:int:???,4:int:???
+100: TELEPORT_CHAR?	0	0:chr:Character,1:float:x,2:float:y,3:float:z,4:int:???
+101: POP_CHAR	0	0:chr:Character,1:boolext:Pop in/out
+102: ???	0	0:int:???,1:float:x,2:float:y,3:float:z,4:int:???
+103: ???	0	0:int:???
+104: CHAR_MOVE_TO	0	0:chr:Character,1:float:x,2:float:y,3:float:z,4:boolext:???,5:bool:???,6:int:???
+105: CHAR_MOVE_TO??	0	0:chr:Character,1:int:???,2:int:???,3:boolext:???,4:int:???,5:chr:???
+106: GO_TO_END?	0	0:chr:Character,1:chr:???,2:chr:???,3:chr:???
+109: ???	0	0:int:???,1:bool:???
+110: TEXTBOX	0	0:chr:Character,1:anim:Animation,2:boolext:Scron/Scroff,3:int:???,4:int:Index
+111: TEXTBOX_YES/NO	0	0:chr:Character,1:anim:Animation,2:boolext:Scron/Scroff,3:boolext:???4:int:Index
+112: ???	0	0:int:???
+113: TEXTBOX_UI	0	0:chr:Character?,4:int:Index
+114: ???	0	0:chr:Character?,4:boolext:???
+115: WARP	0	0:chr:Character,1:int:???,2:int:???,3:int:???
+116: ???	0	0:int:???,1:int:???,2:int:???,3:int:???
+118: VOICE_TEXT	0	0:chr:Character,4:int:Idex
+119: VOICE_FADE	0	0:boolext:Fade in
+120: ANIMATION	0	0:chr:Character,1:anim:Animation,2:bool:Persistant
+121: ???	0	0:bool:???,1:int:???
+122: ???	0	0:int:???,1:int:???
+123: ???	0	0:int:???,1:int:???
+130: TARGET_SPEAKER?	0	0:chr:Character,1:int:???
+131: ???	0	0:int:???
+132: TARGET_PLAYER	0	0:chr:Character,1:int:???
+133: TARGET_CHAR	0	0:chr:Character,1:chr:Target,2:int:???
+134: ???	0	0:chr:Character,1:int:???
+135: ???	0	0:int:???,1:int:???,2:int:???
+136: TURN_COORD	0	0:chr:Character,1:int:???,2:int:???,3:int:???
+137: ???	0	0:int:???
+138: SET_TURN_TO_SPEAKER	0	0:chr:Character,1:boolext:Turn
+139: ???	0	0:boolext:???
+140: ???	0	0:int:???
+141: ???	0	
+142: ???	0	0:chr:Character
+144: ???	0	0:chr:Character,1:int:???,2:int:???
+146: ???	0	0:int:???,1:int:???,2:bool:???,3:int:???,3:int:???
+147: ???	0	0:bool0:???
+148: ???	0	0:boolext:???
+160: ???	0	0:chr:Character,1:boolext:???
+170: ???	0	0:int:???
+172: ???	0	0:chr:Character??,1:int:???
+173: ???	0	0:chr:Character??
+174: ???	0	0:chr:Character??,1:int:???
+175: ???	0	0:chr:Character??
+176: ???	0	0:chr:Character??,1:int:???
+177: ???	0	0:chr:Character??
+180: GO_TO_CHAR	0	0:chr:Character,1:chr:Target,2:chr:???,3:chr:???,4:chr:???

@@ -108,6 +108,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
 
         private static string convert(string baseText)
         {
+
             var LineProcessed = baseText.Replace("<6>", "‛");
             LineProcessed = LineProcessed.Replace("<9>", "’");
             LineProcessed = LineProcessed.Replace("<66>", "“");
@@ -122,12 +123,15 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = LineProcessed.Replace("<br>", Environment.NewLine);
             LineProcessed = LineProcessed.Replace("<--->", "⎯⎯ ");
             LineProcessed = LineProcessed.Replace("<note>", "♩");
+            LineProcessed = LineProcessed.Replace("<man>", "");
             LineProcessed = LineProcessed.Replace("<pname>", ViewModel.PlayerName);
             LineProcessed = Regex.Replace(LineProcessed, @"(?<=<cap>)[a-zA-Z]", match => match.Value.ToUpper());
             LineProcessed = LineProcessed.Replace("<cap>", "");
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
+            LineProcessed = Regex.Replace(LineProcessed, @"<show\((.*?)\)>", match => ""); //Remove name
+            LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => InformationReading.GetCharNames(ushort.Parse(match.Groups[1].Value),ViewModel._currentLanguage )); //names
             //LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
-            LineProcessed = Regex.Replace(LineProcessed, @"<\$cdef\((.*?)\)>(.*?)</color>", match => match.Groups[2].Value); //remove colour
+            //LineProcessed = Regex.Replace(LineProcessed, @"<\$cdef\((.*?)\)>(.*?)</color>", match => match.Groups[2].Value); //remove colour
             return LineProcessed;
         }
         public static string ProcessLine(string baseText)
@@ -204,9 +208,16 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                     var stringMatch = Regex.Match(JPLines[i], @"<(.*?):(.*?)>");
 
                     var inlineUIContainer1 = new InlineUIContainer();
-                    var Grid = new Grid() { Height = 26};
+                    var Grid = new Grid() { Height = 30, Margin = new Thickness(0, 0, 0, -4.4) };
                     //Top Text
-                    var textBlockTop = new TextBlock { Text = stringMatch.Groups[2].Value, Foreground = BG, Background = System.Windows.Media.Brushes.Transparent, HorizontalAlignment = System.Windows.HorizontalAlignment.Center };
+                    var textBlockTop = new TextBlock { Text = stringMatch.Groups[2].Value,
+                        Margin = new Thickness(-10, 0, -10, 0), Foreground = BG,
+                        Background = System.Windows.Media.Brushes.Transparent,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center, 
+                        Opacity=0.7 };
+
+
+                    
                     var binding = new Binding("DataContext.PreviewFontFamily")
                     {
                         RelativeSource = new RelativeSource
@@ -215,6 +226,8 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                         }
                     };
                     textBlockTop.SetBinding(TextBox.FontFamilyProperty, binding);
+                     
+                    
                     binding = new Binding("DataContext.PreviewFontSizeFurigana")
                     {
                         RelativeSource = new RelativeSource
@@ -223,10 +236,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                         }
                     };
                     textBlockTop.SetBinding(TextBox.FontSizeProperty, binding);
-                    Grid.Children.Add(textBlockTop);
 
-                    //Bottom text
-                    var textBlockBottom = new TextBlock { Text = stringMatch.Groups[1].Value, Foreground = BG, Background = System.Windows.Media.Brushes.Transparent, Margin = new Thickness(0, 11, 0, 0) };
                     binding = new Binding("DataContext.DialogueHeight")
                     {
                         RelativeSource = new RelativeSource
@@ -235,6 +245,13 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                         }
                     };
                     textBlockTop.SetBinding(TextBox.TextProperty, binding);
+                    Grid.Children.Add(textBlockTop);
+
+                    //Bottom text
+                    var textBlockBottom = new TextBlock { Text = stringMatch.Groups[1].Value, Foreground = BG, Background = System.Windows.Media.Brushes.Transparent, Margin = new Thickness(0, 10, 0, 0) };
+                    
+                    
+
                     binding = new Binding("DataContext.PreviewFontFamily")
                     {
                         RelativeSource = new RelativeSource
@@ -243,6 +260,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                         }
                     };
                     textBlockBottom.SetBinding(TextBox.FontFamilyProperty, binding);
+
                     binding = new Binding("DataContext.PreviewFontSize")
                     {
                         RelativeSource = new RelativeSource
@@ -251,10 +269,12 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                         }
                     };
                     textBlockBottom.SetBinding(TextBox.FontSizeProperty, binding);
+
                     Grid.Children.Add(textBlockBottom);
 
                     inlineUIContainer1.Child = Grid;
                     textBlock.Inlines.Add(inlineUIContainer1);
+                    
                 }
                 textBlock.Inlines.Add(new Run(Regex.Replace(JPLines[i], @"<(.*?):(.*?)>", ""))
                 {

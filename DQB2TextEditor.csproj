@@ -11,6 +11,8 @@
     <None Remove="info\code.txt" />
     <None Remove="info\colorcodes.txt" />
     <None Remove="info\DQB2_2.ttf" />
+    <None Remove="info\IW4RD3.ttf" />
+    <None Remove="info\PRGothIWA-HW-Dm.ttf" />
     <None Remove="Info\versions\Steam-DEBUG-1.7.2_1.7.3a.txt" />
     <None Remove="Info\versions\Steam1.7.2_1.7.3d.txt" />
     <None Remove="Info\versions\Switch-Demo-EU-1.0-JumboDemo-EU-1.1.txt" />
@@ -39,5 +41,6 @@
   <ItemGroup>
     <Resource Include="info\colorcodes.txt" />
     <Resource Include="info\DQB2_2.ttf" />
+    <Resource Include="info\PRGothIWA-HW-Dm.ttf" />
   </ItemGroup>
 </Project>
