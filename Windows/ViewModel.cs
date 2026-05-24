@@ -22,6 +22,8 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 
 using System.Windows.Media;
+using System.Windows.Media.TextFormatting;
+using System.Windows.Shapes;
 
 
 namespace DQB2TextEditor.Windows
@@ -222,7 +224,7 @@ namespace DQB2TextEditor.Windows
             var progressWindow = new ProgressWindow("Searching for string...", "Note: Things like names, player pronouns or other generated text wont filter properly."+Environment.NewLine +"Note 2: Text files are a bit broken so the search will sometimes hang on a few files.", (uint)linkdata.MenuTexts.Count);
             progressWindow.Show();
             var filterText = FilterTextGeneral?.Trim().ToLower() ?? String.Empty;
-
+            linkdata.KeepLDLoaded(true);
             window.IsHitTestVisible = false;
             await Task.Run(() =>
             {
@@ -251,12 +253,14 @@ namespace DQB2TextEditor.Windows
                     });
                 }
             });
+            linkdata.KeepLDLoaded(false);
             window.IsHitTestVisible = true;
             progressWindow.Close();
             MenuTexts = newTexts;
             OnPropertyChanged(nameof(MenuTexts));
         }
 
+        
         public async void TextFilter()
         {
             var newDialogues = new ObservableCollection<Dialogue>();
@@ -265,6 +269,7 @@ namespace DQB2TextEditor.Windows
             var filterText = FilterText?.Trim().ToLower() ?? String.Empty;
 
             window.IsHitTestVisible = false;
+            linkdata.KeepLDLoaded(true);
             await Task.Run(() =>
             {
                 int i = 0;
@@ -292,11 +297,178 @@ namespace DQB2TextEditor.Windows
                     });
                 }
             });
+            linkdata.KeepLDLoaded(false);
             window.IsHitTestVisible = true;
             progressWindow.Close();
             Dialogues = newDialogues;
             OnPropertyChanged(nameof(Dialogues));
         }
+
+        public async void TextFilterMALROTH() { }
+        /*
+        public async void TextFilterMALROTH()
+        {
+            var MALROTH = new List<int>() { 1, 54, 55, 542, 753, 886, 895 };
+            var newDialogues = new ObservableCollection<Dialogue>();
+            var progressWindow = new ProgressWindow("Searching for string...", "Note: Things like names, player pronouns or other generated text wont filter properly.", (uint)linkdata.Dialogues.Count);
+            progressWindow.Show();
+            var filterText = FilterText?.Trim().ToLower() ?? String.Empty;
+
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+                int i = 0;
+                foreach (var dialogue in linkdata.Dialogues)
+                {
+                    var mad = dialogue.GetDialogueLines().ToList();
+                    foreach (var line in mad)
+                    {
+                        if(line.argumentCount < 1) continue;
+                        var newline = line.Line?.Trim().ToLower() ?? String.Empty;
+                        if (!String.IsNullOrEmpty(newline) && !newline.Equals("\0"))
+                        {
+                            try {
+                                var t = line.GetArgument(0);
+                                if (t.Item2 == typeof(Character) && MALROTH.Contains((int)t.Item1))
+                                {
+                                    if (newline.Contains(filterText) || Regex.Replace(newline, @"<(.*?)>", "").Contains(filterText))
+                                    {
+                                        newDialogues.Add(dialogue);
+                                        dialogue.PreviewLine = TrimAroundPhrase(line.Line, filterText);
+                                        break;
+                                    }
+                                }
+                            }
+                            catch(InvalidOperationException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                continue;
+                            }
+                           
+
+                        }
+                    }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+            Dialogues = newDialogues;
+            OnPropertyChanged(nameof(Dialogues));
+        }
+        
+        public async void TextFilterMALROTH()
+        {
+            linkdata.KeepLDLoaded(true);
+            var progressWindow = new ProgressWindow("Searching for bool...", "Note: Things like names, player pronouns or other generated text wont filter properly.", (uint)linkdata.Dialogues.Count);
+            progressWindow.Show();
+            File.WriteAllText("RESULTs.txt", "");
+
+            var a = new Dictionary<Type, Dictionary<int,List<int>>>();
+            a.Add(typeof(bool), new Dictionary<int, List<int>>());
+            a.Add(typeof(bool?), new Dictionary<int, List<int>>());
+            a.Add(typeof(Bool0), new Dictionary<int, List<int>>());
+            a.Add(typeof(Boolext2), new Dictionary<int, List<int>>());
+
+            window.IsHitTestVisible = false;
+            await Task.Run(() =>
+            {
+            int i = 0;
+            foreach (var dialogue in linkdata.Dialogues)
+            {
+                var mad = dialogue.GetDialogueLines().ToList();
+                foreach (var line in mad)
+                {
+                    if (line.argumentCount < 1) continue;
+                    try
+                    {
+                        if (line.command <= 180) {
+                            for (int j = 0; j < line.argumentCount; j++) {
+                                var t = line.GetArgument(j);
+                                switch (t.Item2)
+                                {
+                                    case Type rr when rr == typeof(bool):
+                                        if (!a[typeof(bool)].ContainsKey(line.command))
+                                            a[typeof(bool)].Add(line.command, new List<int>());
+                                        if (!a[typeof(bool)][line.command].Contains((int)t.Item1))
+                                            a[typeof(bool)][line.command].Add((int)t.Item1);
+                                            break;
+                                        case Type ee when ee == typeof(bool?):
+                                            if (!a[typeof(bool?)].ContainsKey(line.command))
+                                                a[typeof(bool?)].Add(line.command, new List<int>());
+                                            if (!a[typeof(bool?)][line.command].Contains((int)t.Item1))
+                                                a[typeof(bool?)][line.command].Add((int)t.Item1);
+                                            break;
+                                        case Type bb when bb == typeof(Bool0):
+                                            if (!a[typeof(Bool0)].ContainsKey(line.command))
+                                                a[typeof(Bool0)].Add(line.command, new List<int>());
+                                            if (!a[typeof(Bool0)][line.command].Contains((int)t.Item1))
+                                                a[typeof(Bool0)][line.command].Add((int)t.Item1);
+                                            break;
+                                        case Type cc when cc == typeof(Boolext2):
+                                            if (!a[typeof(Boolext2)].ContainsKey(line.command))
+                                                a[typeof(Boolext2)].Add(line.command, new List<int>());
+                                            if (!a[typeof(Boolext2)][line.command].Contains((int)t.Item1))
+                                                a[typeof(Boolext2)][line.command].Add((int)t.Item1);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                continue;
+                            }
+                        }
+                    i++;
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        progressWindow.Bar.Value = i;
+                        progressWindow.progress.Text = i.ToString() + "/" + linkdata.Dialogues.Count.ToString();
+                    });
+                }
+            });
+            File.AppendAllText("RESULTs.txt", "bool: ");
+            foreach (var item in a[typeof(bool)])
+            {
+                File.AppendAllText("RESULTs.txt", item.Key + ":");
+                foreach (var i in item.Value)
+                    File.AppendAllText("RESULTs.txt", i + ",");
+            }
+            File.AppendAllText("RESULTs.txt", "\nbool?: ");
+            foreach (var item in a[typeof(bool?)])
+            {
+                File.AppendAllText("RESULTs.txt", item.Key + ":");
+                foreach (var i in item.Value)
+                    File.AppendAllText("RESULTs.txt", i + ",");
+            }
+            File.AppendAllText("RESULTs.txt", "\nBool0: ");
+            foreach (var item in a[typeof(Bool0)])
+            {
+                File.AppendAllText("RESULTs.txt", item.Key + ":");
+                foreach (var i in item.Value)
+                    File.AppendAllText("RESULTs.txt", i + ",");
+            }
+            File.AppendAllText("RESULTs.txt", "\nBoolext2: ");
+            foreach (var item in a[typeof(Boolext2)])
+            {
+                File.AppendAllText("RESULTs.txt", item.Key + ":");
+                foreach (var i in item.Value)
+                    File.AppendAllText("RESULTs.txt", i + ",");
+            }
+            linkdata.KeepLDLoaded(false);
+            window.IsHitTestVisible = true;
+            progressWindow.Close();
+        }
+        */
 
         public void SizeChange()
         {

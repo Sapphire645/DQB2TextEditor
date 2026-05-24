@@ -130,7 +130,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
             LineProcessed = Regex.Replace(LineProcessed, @"<allcap>(.*?)</allcap>", match => match.Groups[1].Value.ToUpper()); //allcap
             LineProcessed = Regex.Replace(LineProcessed, @"<show\((.*?)\)>", match => ""); //Remove name
             LineProcessed = Regex.Replace(LineProcessed, @"<\$cname\((\d+)\)>", match => InformationReading.GetCharNames(ushort.Parse(match.Groups[1].Value),ViewModel._currentLanguage )); //names
-            //LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
+            LineProcessed = Regex.Replace(LineProcessed, @"<morf\((.*?),(.*?)\)>", match => match.Groups[ViewModel.Gender ? 2 : 1].Value);
             //LineProcessed = Regex.Replace(LineProcessed, @"<\$cdef\((.*?)\)>(.*?)</color>", match => match.Groups[2].Value); //remove colour
             return LineProcessed;
         }

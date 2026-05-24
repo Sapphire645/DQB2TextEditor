@@ -17,6 +17,16 @@ namespace DQB2TextEditor.InfoReading
         public string[] Arguments = new string[11];
         public Type[] ArgumentTypes = new Type[11];
 
+        public byte ArgumentCount {
+            get{
+                byte res = 0;
+                for(int i = 0; i < 11; i++)
+                    if(ArgumentTypes[i] != null)
+                        res = (byte)(i+1);
+                return res;
+            }
+        }
+
         public List<int> GetArgumentIndexes()
         {
             List<int> indexes = new List<int>();
@@ -89,17 +99,17 @@ namespace DQB2TextEditor.InfoReading
                         case "chr":
                             ArgumentTypes[index] = typeof(Character);
                             break;
-                        case "bool":
-                            ArgumentTypes[index] = typeof(bool);
+                        case "coord":
+                            ArgumentTypes[index] = typeof(Coordenate);
                             break;
-                        case "boolext":
-                            ArgumentTypes[index] = typeof(bool?);
+                        case "bool01":
+                            ArgumentTypes[index] = typeof(Bool01);
                             break;
-                        case "bool0":
-                            ArgumentTypes[index] = typeof(Bool0);
+                        case "boolN01":
+                            ArgumentTypes[index] = typeof(BoolN01);
                             break;
-                        case "boolext2":
-                            ArgumentTypes[index] = typeof(Boolext2);
+                        case "boolN012":
+                            ArgumentTypes[index] = typeof(BoolN012);
                             break;
                         default:
                             ArgumentTypes[index] = typeof(int);

@@ -137,5 +137,11 @@ namespace DQB2TextEditor.Windows
             viewModel.ExportAllLinesFrom(l, dlg.FileName);
             //viewModel.ExtractCommandArguments(dlg.FileName);
         }
+
+        private void MALROTH(object sender, RoutedEventArgs e)
+        {
+            if(ViewModel.linkdata.Encrypted) viewModel.TextFilter();
+            else viewModel.TextFilterMALROTH();
+        }
     }
 }

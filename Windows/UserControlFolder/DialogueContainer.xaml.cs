@@ -52,8 +52,13 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                 ObservableCollection<string> args = new ObservableCollection<string>();
                 for (int i = 0; i < FlowDataEntry.argumentCount; i++)
                 {
-                    if(FlowDataEntry.GetArgumentName(i) != null)
-                        args.Add(i + " | " + FlowDataEntry.GetArgumentName(i) + "\n     "+ FlowDataEntry.GetArgument(i).Item1.ToString());
+                    var temp = FlowDataEntry.GetArgument(i);
+                    if (FlowDataEntry.GetArgumentName(i) != null)
+                        args.Add(i + " | " + FlowDataEntry.GetArgumentName(i) + "\n     " + 
+                            ((temp.Item1 is ArgumentClass) ? 
+                            ((ArgumentClass)temp.Item1).Display :
+                            ((int)temp.Item1 == -1 ? "null" : temp.Item1.ToString())
+                            ));
                 }
                 return args;
                
@@ -130,10 +135,7 @@ namespace DQB2TextEditor.Windows.UserControlFolder
                 else
                     if (FlowDataEntry.GetArgumentName(0) != null && FlowDataEntry.GetArgument(0).Item2 == typeof(Character))
                     {
-                        if ((int)FlowDataEntry.GetArgument(0).Item1 == 0) 
-                            CharName = null;
-                        else
-                            CharName = InformationReading.GetCharNames((ushort)(int)FlowDataEntry.GetArgument(0).Item1, ViewModel._currentLanguage);
+                            CharName = ((Character)FlowDataEntry.GetArgument(0).Item1).Name;
                     }
 
                 //NAME ASIA

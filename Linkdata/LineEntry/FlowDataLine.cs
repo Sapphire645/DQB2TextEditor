@@ -15,7 +15,17 @@ namespace DQB2TextEditor.Linkdata.LineEntry
     {
         private byte[] data;
 
-        public int argumentCount => types.Length;
+        public byte argumentCount
+        {
+            get
+            {
+                if (InformationReading.Commands.TryGetValue(command, out CommandInfo cmdInfo))
+                {
+                    return cmdInfo.ArgumentCount;
+                }
+                return 11;
+            }
+        }
 
         private string line;
 
@@ -42,11 +52,7 @@ namespace DQB2TextEditor.Linkdata.LineEntry
         {
             if(InformationReading.Commands.TryGetValue(command, out CommandInfo cmdInfo))
             {
-
                return cmdInfo.Arguments[index];
-
-
-                
             }
             return "???";
         }
@@ -61,8 +67,6 @@ namespace DQB2TextEditor.Linkdata.LineEntry
         public FlowDataLine(byte[] data, string line)
         {
             this.data = data;
-
-            
             this.line = line;
         }
 
@@ -71,17 +75,23 @@ namespace DQB2TextEditor.Linkdata.LineEntry
             switch (types[index])
             {
                 case Type t when t == typeof(int):
-                case Type a when a == typeof(Character):
                     return BitConverter.ToInt32(data, index * 4);
+                case Type a when a == typeof(Character):
+                    return new Character(BitConverter.ToInt32(data, index * 4));
                 case Type t when t == typeof(float):
                     return BitConverter.ToSingle(data, index * 4);
-                case Type t when t == typeof(bool):
-                case Type a when a == typeof(bool?):
-                case Type b when b == typeof(Bool0):
-                case Type c when c == typeof(Boolext2):
-                    return (BitConverter.ToInt32(data, index * 4) == 1);
+                case Type t when t == typeof(Bool01):
+                    return (new Bool01(BitConverter.ToInt32(data, index * 4)));
+                case Type a when a == typeof(BoolN01):
+                    return (new BoolN01(BitConverter.ToInt32(data, index * 4)));
+                case Type b when b == typeof(BoolN012):
+                    return (new BoolN012(BitConverter.ToInt32(data, index * 4)));
+                case Type c when c == typeof(Coordenate):
+                    return (new Coordenate(BitConverter.ToInt32(data, index * 4)));
                 default:
-                    throw new InvalidOperationException($"Unsupported type: {types[index]}");
+                    Console.WriteLine($"Unsupported type: {types[index]}, {index}");
+                    return BitConverter.ToInt32(data, index * 4);
+                    
             }
         }
 

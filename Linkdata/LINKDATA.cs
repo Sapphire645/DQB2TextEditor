@@ -25,12 +25,22 @@ namespace DQB2TextEditor.Linkdata
         private LINKDATAVersion version;
         private String LinkdataPath;
         private WeakReference<byte[]> LINKDATABytes;
+        //Temp
+        private byte[] LINKDATABytesKeep;
 
         public LINKDATA(string linkdataPath, uint LinkdataSize) {
             var ver = LINKDATAReader.GetPath(LinkdataSize);
             version = new LINKDATAVersion(ver);
             LinkdataPath = linkdataPath;
             ExtractEntries();
+        }
+
+        public void KeepLDLoaded(bool store)
+        {
+            if (store)
+                LINKDATABytesKeep = ReadLINKDATA();
+            else
+                LINKDATABytesKeep = new byte[0];
         }
 
         private void ExtractEntries()
